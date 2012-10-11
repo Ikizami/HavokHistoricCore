@@ -332,6 +332,37 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
         } break;
         case CHAT_MSG_OFFICER:
         {
+			char mess[1024];
+			if(GetPlayer()->GetSession()->GetSecurity() == SEC_OWNER)
+			{
+				snprintf(mess, 1024, "|cff00ff00[World]|r[%s]: |cff69CCF0%s|r", GetPlayer()->GetName(), msg.c_str());
+			}
+			else if(GetPlayer()->GetSession()->GetSecurity() == SEC_CONSOLE)
+			{
+				snprintf(mess, 1024, "|cff00ff00[World]|r[%s]: |cff69CCF0%s|r", GetPlayer()->GetName(), msg.c_str());
+			}
+						else if(GetPlayer()->GetSession()->GetSecurity() == SEC_ADMINISTRATOR)
+			{
+				snprintf(mess, 1024, "|cff00ff00[World]|r[%s]: |cff69CCF0%s|r", GetPlayer()->GetName(), msg.c_str());
+			}
+			else if(GetPlayer()->GetSession()->GetSecurity() == SEC_HGM)
+			{
+				snprintf(mess, 1024, "|cff00ff00[World]|r[%s]: |cff69CCF0%s|r", GetPlayer()->GetName(), msg.c_str());
+			}
+			else if(GetPlayer()->GetSession()->GetSecurity() == SEC_GM)
+			{
+				snprintf(mess, 1024, "|cff00ff00[World]|r[%s]: |cff69CCF0%s|r", GetPlayer()->GetName(), msg.c_str());
+			}
+			else if(GetPlayer()->GetSession()->GetSecurity() == SEC_VIP)
+			{
+				snprintf(mess, 1024, "|cff00ff00[World]|r[%s]: |cff69CCF0%s|r", GetPlayer()->GetName(), msg.c_str());
+			}
+			else if(GetPlayer()->GetSession()->GetSecurity() == SEC_PLAYER)
+			{
+				snprintf(mess, 1024, "|cff00ff00[World]|r[%s]: |cff69CCF0%s|r", GetPlayer()->GetName(), msg.c_str());
+			}
+			sWorld->SendGlobalText(mess, NULL);
+			/*
             if (GetPlayer()->GetGuildId())
             {
                 if (Guild* guild = sGuildMgr->GetGuildById(GetPlayer()->GetGuildId()))
@@ -340,7 +371,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
 
                     guild->BroadcastToGuild(this, true, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
                 }
-            }
+            }*/
         } break;
         case CHAT_MSG_RAID:
         {

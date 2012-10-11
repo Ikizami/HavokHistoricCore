@@ -284,12 +284,12 @@ bool IsPlayerAccount(uint32 gmlevel)
 
 bool IsModeratorAccount(uint32 gmlevel)
 {
-    return gmlevel >= SEC_MODERATOR && gmlevel <= SEC_CONSOLE;
+    return gmlevel >= SEC_GM && gmlevel <= SEC_CONSOLE;
 }
 
 bool IsGMAccount(uint32 gmlevel)
 {
-    return gmlevel >= SEC_GAMEMASTER && gmlevel <= SEC_CONSOLE;
+    return gmlevel >= SEC_HGM && gmlevel <= SEC_CONSOLE;
 }
 
 bool IsAdminAccount(uint32 gmlevel)
@@ -299,7 +299,12 @@ bool IsAdminAccount(uint32 gmlevel)
 
 bool IsConsoleAccount(uint32 gmlevel)
 {
-    return gmlevel == SEC_CONSOLE;
+    return gmlevel == SEC_CONSOLE && gmlevel <= SEC_OWNER;
+}
+
+bool IsOwnerAccount(uint32 gmlevel)
+{
+    return gmlevel == SEC_OWNER;
 }
 
 } // Namespace AccountMgr

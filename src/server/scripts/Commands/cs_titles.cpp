@@ -35,20 +35,20 @@ public:
     {
         static ChatCommand titlesSetCommandTable[] =
         {
-            { "mask",           SEC_GAMEMASTER,     false, &HandleTitlesSetMaskCommand,        "", NULL },
+            { "mask",           SEC_HGM,     false, &HandleTitlesSetMaskCommand,        "", NULL },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         static ChatCommand titlesCommandTable[] =
         {
-            { "add",            SEC_GAMEMASTER,     false, &HandleTitlesAddCommand,            "", NULL },
-            { "current",        SEC_GAMEMASTER,     false, &HandleTitlesCurrentCommand,        "", NULL },
-            { "remove",         SEC_GAMEMASTER,     false, &HandleTitlesRemoveCommand,         "", NULL },
-            { "set",            SEC_GAMEMASTER,     false, NULL,              "", titlesSetCommandTable },
+            { "add",            SEC_HGM,     false, &HandleTitlesAddCommand,            "", NULL },
+            { "current",        SEC_HGM,     false, &HandleTitlesCurrentCommand,        "", NULL },
+            { "remove",         SEC_HGM,     false, &HandleTitlesRemoveCommand,         "", NULL },
+            { "set",            SEC_HGM,     false, NULL,              "", titlesSetCommandTable },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         static ChatCommand commandTable[] =
         {
-            { "titles",         SEC_GAMEMASTER,     false, NULL,                 "", titlesCommandTable },
+            { "titles",         SEC_HGM,     false, NULL,                 "", titlesCommandTable },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         return commandTable;

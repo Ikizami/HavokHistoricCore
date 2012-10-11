@@ -46,15 +46,15 @@ public:
         };
         static ChatCommand petCommandTable[] =
         {
-            { "create",             SEC_GAMEMASTER,         false, &HandleCreatePetCommand,             "", NULL },
-            { "learn",              SEC_GAMEMASTER,         false, &HandlePetLearnCommand,              "", NULL },
-            { "unlearn",            SEC_GAMEMASTER,         false, &HandlePetUnlearnCommand,            "", NULL },
+            { "create",             SEC_HGM,         false, &HandleCreatePetCommand,             "", NULL },
+            { "learn",              SEC_HGM,         false, &HandlePetLearnCommand,              "", NULL },
+            { "unlearn",            SEC_HGM,         false, &HandlePetUnlearnCommand,            "", NULL },
             { NULL,                 0,                      false, NULL,                                "", NULL }
         };
         static ChatCommand sendCommandTable[] =
         {
             { "items",              SEC_ADMINISTRATOR,      true,  &HandleSendItemsCommand,             "", NULL },
-            { "mail",               SEC_MODERATOR,          true,  &HandleSendMailCommand,              "", NULL },
+            { "mail",               SEC_GM,          true,  &HandleSendMailCommand,              "", NULL },
             { "message",            SEC_ADMINISTRATOR,      true,  &HandleSendMessageCommand,           "", NULL },
             { "money",              SEC_ADMINISTRATOR,      true,  &HandleSendMoneyCommand,             "", NULL },
             { NULL,                 0,                      false, NULL,                                "", NULL }
@@ -65,22 +65,22 @@ public:
             { "gps",                SEC_ADMINISTRATOR,      false, &HandleGPSCommand,                   "", NULL },
             { "aura",               SEC_ADMINISTRATOR,      false, &HandleAuraCommand,                  "", NULL },
             { "unaura",             SEC_ADMINISTRATOR,      false, &HandleUnAuraCommand,                "", NULL },
-            { "appear",             SEC_MODERATOR,          false, &HandleAppearCommand,                "", NULL },
-            { "summon",             SEC_MODERATOR,          false, &HandleSummonCommand,                "", NULL },
-            { "groupsummon",        SEC_MODERATOR,          false, &HandleGroupSummonCommand,           "", NULL },
+            { "appear",             SEC_GM,          false, &HandleAppearCommand,                "", NULL },
+            { "summon",             SEC_GM,          false, &HandleSummonCommand,                "", NULL },
+            { "groupsummon",        SEC_GM,          false, &HandleGroupSummonCommand,           "", NULL },
             { "commands",           SEC_PLAYER,             true,  &HandleCommandsCommand,              "", NULL },
             { "die",                SEC_ADMINISTRATOR,      false, &HandleDieCommand,                   "", NULL },
             { "revive",             SEC_ADMINISTRATOR,      true,  &HandleReviveCommand,                "", NULL },
             { "dismount",           SEC_PLAYER,             false, &HandleDismountCommand,              "", NULL },
-            { "guid",               SEC_GAMEMASTER,         false, &HandleGUIDCommand,                  "", NULL },
+            { "guid",               SEC_HGM,         false, &HandleGUIDCommand,                  "", NULL },
             { "help",               SEC_PLAYER,             true,  &HandleHelpCommand,                  "", NULL },
-            { "itemmove",           SEC_GAMEMASTER,         false, &HandleItemMoveCommand,              "", NULL },
+            { "itemmove",           SEC_HGM,         false, &HandleItemMoveCommand,              "", NULL },
             { "cooldown",           SEC_ADMINISTRATOR,      false, &HandleCooldownCommand,              "", NULL },
             { "distance",           SEC_ADMINISTRATOR,      false, &HandleGetDistanceCommand,           "", NULL },
-            { "recall",             SEC_MODERATOR,          false, &HandleRecallCommand,                "", NULL },
+            { "recall",             SEC_GM,          false, &HandleRecallCommand,                "", NULL },
             { "save",               SEC_PLAYER,             false, &HandleSaveCommand,                  "", NULL },
-            { "saveall",            SEC_MODERATOR,          true,  &HandleSaveAllCommand,               "", NULL },
-            { "kick",               SEC_GAMEMASTER,         true,  &HandleKickPlayerCommand,            "", NULL },
+            { "saveall",            SEC_GM,          true,  &HandleSaveAllCommand,               "", NULL },
+            { "kick",               SEC_HGM,         true,  &HandleKickPlayerCommand,            "", NULL },
             { "unstuck",            SEC_PLAYER,             true,  &HandleUnstuckCommand,               "", NULL },
             { "linkgrave",          SEC_ADMINISTRATOR,      false, &HandleLinkGraveCommand,             "", NULL },
             { "neargrave",          SEC_ADMINISTRATOR,      false, &HandleNearGraveCommand,             "", NULL },
@@ -92,27 +92,27 @@ public:
             { "wchange",            SEC_ADMINISTRATOR,      false, &HandleChangeWeather,                "", NULL },
             { "maxskill",           SEC_ADMINISTRATOR,      false, &HandleMaxSkillCommand,              "", NULL },
             { "setskill",           SEC_ADMINISTRATOR,      false, &HandleSetSkillCommand,              "", NULL },
-            { "pinfo",              SEC_GAMEMASTER,         true,  &HandlePInfoCommand,                 "", NULL },
+            { "pinfo",              SEC_HGM,         true,  &HandlePInfoCommand,                 "", NULL },
             { "respawn",            SEC_ADMINISTRATOR,      false, &HandleRespawnCommand,               "", NULL },
-            { "send",               SEC_MODERATOR,          true,  NULL,                                "", sendCommandTable },
-            { "pet",                SEC_GAMEMASTER,         false, NULL,                                "", petCommandTable },
-            { "mute",               SEC_MODERATOR,          true,  &HandleMuteCommand,                  "", NULL },
-            { "unmute",             SEC_MODERATOR,          true,  &HandleUnmuteCommand,                "", NULL },
+            { "send",               SEC_GM,          true,  NULL,                                "", sendCommandTable },
+            { "pet",                SEC_HGM,         false, NULL,                                "", petCommandTable },
+            { "mute",               SEC_GM,          true,  &HandleMuteCommand,                  "", NULL },
+            { "unmute",             SEC_GM,          true,  &HandleUnmuteCommand,                "", NULL },
             { "movegens",           SEC_ADMINISTRATOR,      false, &HandleMovegensCommand,              "", NULL },
             { "cometome",           SEC_ADMINISTRATOR,      false, &HandleComeToMeCommand,              "", NULL },
             { "damage",             SEC_ADMINISTRATOR,      false, &HandleDamageCommand,                "", NULL },
-            { "combatstop",         SEC_GAMEMASTER,         true,  &HandleCombatStopCommand,            "", NULL },
+            { "combatstop",         SEC_HGM,         true,  &HandleCombatStopCommand,            "", NULL },
             { "flusharenapoints",   SEC_ADMINISTRATOR,      false, &HandleFlushArenaPointsCommand,      "", NULL },
-            { "repairitems",        SEC_GAMEMASTER,         true,  &HandleRepairitemsCommand,           "", NULL },
-            { "freeze",             SEC_MODERATOR,          false, &HandleFreezeCommand,                "", NULL },
-            { "unfreeze",           SEC_MODERATOR,          false, &HandleUnFreezeCommand,              "", NULL },
-            { "listfreeze",         SEC_MODERATOR,          false, &HandleListFreezeCommand,            "", NULL },
+            { "repairitems",        SEC_HGM,         true,  &HandleRepairitemsCommand,           "", NULL },
+            { "freeze",             SEC_GM,          false, &HandleFreezeCommand,                "", NULL },
+            { "unfreeze",           SEC_GM,          false, &HandleUnFreezeCommand,              "", NULL },
+            { "listfreeze",         SEC_GM,          false, &HandleListFreezeCommand,            "", NULL },
             { "group",              SEC_ADMINISTRATOR,      false, NULL,                                "", groupCommandTable },
             { "possess",            SEC_ADMINISTRATOR,      false, HandlePossessCommand,                "", NULL },
             { "unpossess",          SEC_ADMINISTRATOR,      false, HandleUnPossessCommand,              "", NULL },
             { "bindsight",          SEC_ADMINISTRATOR,      false, HandleBindSightCommand,              "", NULL },
             { "unbindsight",        SEC_ADMINISTRATOR,      false, HandleUnbindSightCommand,            "", NULL },
-            { "playall",            SEC_GAMEMASTER,         false, HandlePlayAllCommand,                "", NULL },
+            { "playall",            SEC_HGM,         false, HandlePlayAllCommand,                "", NULL },
             { NULL,                 0,                      false, NULL,                                "", NULL }
         };
         return commandTable;
@@ -907,12 +907,12 @@ public:
         if (!handler->extractPlayerTarget((char*)args, &target, NULL, &playerName))
             return false;
 
-        if (handler->GetSession() && target == handler->GetSession()->GetPlayer())
+        /*if (handler->GetSession() && target == handler->GetSession()->GetPlayer())
         {
             handler->SendSysMessage(LANG_COMMAND_KICKSELF);
             handler->SetSentErrorMessage(true);
             return false;
-        }
+        }*/
 
         // check online security
         if (handler->HasLowerSecurity(target, 0))
@@ -1764,7 +1764,7 @@ public:
         return true;
     }
     // mute player for some times
-    static bool HandleMuteCommand(ChatHandler* handler, char const* args)
+   static bool HandleMuteCommand(ChatHandler* handler, char const* args)
     {
         char* nameStr;
         char* delayStr;

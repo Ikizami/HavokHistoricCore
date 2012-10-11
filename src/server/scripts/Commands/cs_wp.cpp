@@ -36,18 +36,18 @@ public:
     {
         static ChatCommand wpCommandTable[] =
         {
-            { "add",            SEC_GAMEMASTER,     false, &HandleWpAddCommand,                "", NULL },
-            { "event",          SEC_GAMEMASTER,     false, &HandleWpEventCommand,              "", NULL },
-            { "load",           SEC_GAMEMASTER,     false, &HandleWpLoadCommand,               "", NULL },
-            { "modify",         SEC_GAMEMASTER,     false, &HandleWpModifyCommand,             "", NULL },
-            { "unload",         SEC_GAMEMASTER,     false, &HandleWpUnLoadCommand,             "", NULL },
+            { "add",            SEC_HGM,     false, &HandleWpAddCommand,                "", NULL },
+            { "event",          SEC_HGM,     false, &HandleWpEventCommand,              "", NULL },
+            { "load",           SEC_HGM,     false, &HandleWpLoadCommand,               "", NULL },
+            { "modify",         SEC_HGM,     false, &HandleWpModifyCommand,             "", NULL },
+            { "unload",         SEC_HGM,     false, &HandleWpUnLoadCommand,             "", NULL },
             { "reload",         SEC_ADMINISTRATOR,  false, &HandleWpReloadCommand,             "", NULL },
-            { "show",           SEC_GAMEMASTER,     false, &HandleWpShowCommand,               "", NULL },
+            { "show",           SEC_HGM,     false, &HandleWpShowCommand,               "", NULL },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         static ChatCommand commandTable[] =
         {
-            { "wp",             SEC_GAMEMASTER,     false, NULL,                     "", wpCommandTable },
+            { "wp",             SEC_HGM,     false, NULL,                     "", wpCommandTable },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         return commandTable;

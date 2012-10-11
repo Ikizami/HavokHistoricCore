@@ -74,7 +74,7 @@ public:
 
         static ChatCommand serverCommandTable[] =
         {
-            { "corpses",        SEC_GAMEMASTER,     true,  &HandleServerCorpsesCommand,             "", NULL },
+            { "corpses",        SEC_HGM,     true,  &HandleServerCorpsesCommand,             "", NULL },
             { "exit",           SEC_CONSOLE,        true,  &HandleServerExitCommand,                "", NULL },
             { "idlerestart",    SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverIdleRestartCommandTable },
             { "idleshutdown",   SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverIdleShutdownCommandTable },
@@ -144,9 +144,9 @@ public:
             if (strncmp(paramStr, "player", limit) == 0)
                 sWorld->SetPlayerSecurityLimit(SEC_PLAYER);
             else if (strncmp(paramStr, "moderator", limit) == 0)
-                sWorld->SetPlayerSecurityLimit(SEC_MODERATOR);
+                sWorld->SetPlayerSecurityLimit(SEC_GM);
             else if (strncmp(paramStr, "gamemaster", limit) == 0)
-                sWorld->SetPlayerSecurityLimit(SEC_GAMEMASTER);
+                sWorld->SetPlayerSecurityLimit(SEC_HGM);
             else if (strncmp(paramStr, "administrator", limit) == 0)
                 sWorld->SetPlayerSecurityLimit(SEC_ADMINISTRATOR);
             else if (strncmp(paramStr, "reset", limit) == 0)
@@ -172,10 +172,10 @@ public:
             case SEC_PLAYER:
                 secName = "Player";
                 break;
-            case SEC_MODERATOR:
+            case SEC_GM:
                 secName = "Moderator";
                 break;
-            case SEC_GAMEMASTER:
+            case SEC_HGM:
                 secName = "Gamemaster";
                 break;
             case SEC_ADMINISTRATOR:

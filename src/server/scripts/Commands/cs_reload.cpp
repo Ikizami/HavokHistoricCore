@@ -64,6 +64,9 @@ public:
         };
         static ChatCommand reloadCommandTable[] =
         {
+			{ "item",						  SEC_ADMINISTRATOR, true,  &HandleReloadItemCommand,				        "", NULL },
+			{ "creature",					  SEC_ADMINISTRATOR, true,  &HandleReloadCreatureCommand,				    "", NULL },
+			{ "quest",						  SEC_ADMINISTRATOR, true,  &HandleReloadQuestCommand,						"", NULL },
             { "auctions",                     SEC_ADMINISTRATOR, true,  &HandleReloadAuctionsCommand,                   "", NULL },
             { "access_requirement",           SEC_ADMINISTRATOR, true,  &HandleReloadAccessRequirementCommand,          "", NULL },
             { "achievement_criteria_data",    SEC_ADMINISTRATOR, true,  &HandleReloadAchievementCriteriaDataCommand,    "", NULL },
@@ -328,6 +331,37 @@ public:
         HandleReloadLocalesPageTextCommand(handler, "a");
         HandleReloadLocalesPointsOfInterestCommand(handler, "a");
         HandleReloadLocalesQuestCommand(handler, "a");
+        return true;
+    }
+	
+	static bool HandleReloadItemCommand(ChatHandler* handler, const char* /*args*/)
+	{
+		sLog->outInfo(LOG_FILTER_GENERAL, "Reloading Item Table");
+		sObjectMgr->LoadItemTemplates();
+		handler->SendSysMessage("The item table has been reloaded, the server may experience lag for a few seconds.");
+        return true;
+    }
+
+	static bool HandleReloadCreatureCommand(ChatHandler* handler, const char* /*args*/)
+    {
+		sLog->outInfo(LOG_FILTER_GENERAL, "Reloading Creature tables");
+		sObjectMgr->LoadCreatureTemplates();
+        handler->SendSysMessage("The Creature tables has been reloaded, the server may experience lag for a few seconds.");
+        return true;
+    }
+
+	static bool HandleReloadQuestCommand(ChatHandler* handler, const char* /*args*/)
+    {
+		sLog->outInfo(LOG_FILTER_GENERAL, "Reloading Quest Table");
+		sObjectMgr->LoadQuestRelations();
+		sObjectMgr->LoadCreatureQuestRelations();
+		sObjectMgr->LoadCreatureInvolvedRelations();
+		sObjectMgr->LoadGameobjectQuestRelations();
+		sObjectMgr->LoadGameobjectInvolvedRelations();
+		sObjectMgr->LoadQuestAreaTriggers();
+		sObjectMgr->LoadQuests();
+		sObjectMgr->LoadGameObjectForQuests();
+        handler->SendSysMessage("The Quest table has been reloaded, the server may experience lag for a few seconds.");
         return true;
     }
 

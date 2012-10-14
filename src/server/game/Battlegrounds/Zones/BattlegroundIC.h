@@ -19,7 +19,7 @@
 #ifndef __BATTLEGROUNDIC_H
 #define __BATTLEGROUNDIC_H
 
-#include "Battleground.h"
+class Battleground;
 
 const uint32 BG_IC_Factions[2] =
 {
@@ -185,12 +185,12 @@ enum gameobjectsIC
 
 enum Times
 {
-    WORKSHOP_UPDATE_TIME     = 180000, // 3 minutes
-    DOCKS_UPDATE_TIME        = 180000, // not sure if it is 3 minutes
-    IC_RESOURCE_TIME         = 45000, // not sure, need more research
-    CLOSE_DOORS_TIME         = 20000,
+    WORKSHOP_UPDATE_TIME = 180000, // 3 minutes
+    DOCKS_UPDATE_TIME = 180000, // not sure if it is 3 minutes
+    IC_RESOURCE_TIME = 45000, // not sure, need more research
+    CLOSE_DOORS_TIME = 20000,
     BANNER_STATE_CHANGE_TIME = 60000,
-    TRANSPORT_PERIOD_TIME    = 120000
+    TRANSPORT_PERIOD_TIME = 120000
 };
 
 enum Actions
@@ -654,15 +654,18 @@ const Position workshopBombs[2] =
 
 enum Spells
 {
-    SPELL_OIL_REFINERY                     = 68719,
-    SPELL_QUARRY                           = 68720,
-    SPELL_PARACHUTE                        = 66656,
-    SPELL_SLOW_FALL                        = 12438,
-    SPELL_DESTROYED_VEHICLE_ACHIEVEMENT    = 68357,
-    SPELL_DRIVING_CREDIT_DEMOLISHER        = 68365,
-    SPELL_DRIVING_CREDIT_GLAIVE            = 68363,
-    SPELL_DRIVING_CREDIT_SIEGE             = 68364,
-    SPELL_DRIVING_CREDIT_CATAPULT          = 68362,
+    SPELL_OIL_REFINERY      = 68719,
+    SPELL_QUARRY            = 68720,
+
+    SPELL_PARACHUTE = 66656,
+    SPELL_SLOW_FALL = 12438,
+
+    SPELL_DESTROYED_VEHICLE_ACHIEVEMENT = 68357,
+
+    SPELL_DRIVING_CREDIT_DEMOLISHER = 68365,
+    SPELL_DRIVING_CREDIT_GLAIVE = 68363,
+    SPELL_DRIVING_CREDIT_SIEGE = 68364,
+    SPELL_DRIVING_CREDIT_CATAPULT = 68362
 };
 
 enum BG_IC_Objectives
@@ -844,12 +847,13 @@ enum HonorRewards
     WINNER_HONOR_AMOUNT = 500
 };
 
-struct BattlegroundICScore : public BattlegroundScore
+class BattlegroundICScore : public BattlegroundScore
 {
-    BattlegroundICScore() : BasesAssaulted(0), BasesDefended(0) { }
-    ~BattlegroundICScore() { }
-    uint32 BasesAssaulted;
-    uint32 BasesDefended;
+    public:
+        BattlegroundICScore() : BasesAssaulted(0), BasesDefended(0) {};
+        virtual ~BattlegroundICScore() {};
+        uint32 BasesAssaulted;
+        uint32 BasesDefended;
 };
 
 class BattlegroundIC : public Battleground
@@ -859,10 +863,10 @@ class BattlegroundIC : public Battleground
         ~BattlegroundIC();
 
         /* inherited from BattlegroundClass */
-        void AddPlayer(Player* player);
-        void StartingEventCloseDoors();
-        void StartingEventOpenDoors();
-        void PostUpdateImpl(uint32 diff);
+        virtual void AddPlayer(Player* player);
+        virtual void StartingEventCloseDoors();
+        virtual void StartingEventOpenDoors();
+        virtual void PostUpdateImpl(uint32 diff);
 
         void RemovePlayer(Player* player, uint64 guid, uint32 team);
         void HandleAreaTrigger(Player* Source, uint32 Trigger);
@@ -876,7 +880,7 @@ class BattlegroundIC : public Battleground
         void EventPlayerDamagedGO(Player* /*player*/, GameObject* go, uint32 eventType);
         void DestroyGate(Player* player, GameObject* go);
 
-        WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
+        virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
 
         /* Scorekeeping */
         void UpdatePlayerScore(Player* Source, uint32 type, uint32 value, bool doAddHonor = true);
@@ -885,11 +889,11 @@ class BattlegroundIC : public Battleground
 
         void DoAction(uint32 action, uint64 var);
 
-        void HandlePlayerResurrect(Player* player);
+        virtual void HandlePlayerResurrect(Player* player);
 
-        uint32 GetNodeState(uint8 nodeType) const { return (uint8)nodePoint[nodeType].nodeState; }
+        uint32 GetNodeState(uint8 nodeType) { return (uint8)nodePoint[nodeType].nodeState; }
 
-        bool IsAllNodesConrolledByTeam(uint32 team) const;  // overwrited
+        virtual bool IsAllNodesConrolledByTeam(uint32 team) const;  // overwrited
     private:
         uint32 closeFortressDoorsTimer;
         bool doorsClosed;
@@ -955,5 +959,4 @@ class BattlegroundIC : public Battleground
         Transport* CreateTransport(uint32 goEntry, uint32 period);
         void SendTransportInit(Player* player);
 };
-
 #endif

@@ -37,33 +37,33 @@ public:
     {
         static ChatCommand ticketResponseCommandTable[] =
         {
-            { "append",         SEC_GM,      true,  &HandleGMTicketResponseAppendCommand,    "", NULL },
-            { "appendln",       SEC_GM,      true,  &HandleGMTicketResponseAppendLnCommand,  "", NULL },
+            { "append",         SEC_MODERATOR,      true,  &HandleGMTicketResponseAppendCommand,    "", NULL },
+            { "appendln",       SEC_MODERATOR,      true,  &HandleGMTicketResponseAppendLnCommand,  "", NULL },
             { NULL,             0,                  false, NULL,                                    "", NULL }
         };
         static ChatCommand ticketCommandTable[] =
         {
-            { "assign",         SEC_HGM,     true,  &HandleGMTicketAssignToCommand,          "", NULL },
-            { "close",          SEC_GM,      true,  &HandleGMTicketCloseByIdCommand,         "", NULL },
-            { "closedlist",     SEC_GM,      true,  &HandleGMTicketListClosedCommand,        "", NULL },
-            { "comment",        SEC_GM,      true,  &HandleGMTicketCommentCommand,           "", NULL },
-            { "complete",       SEC_GM,      true,  &HandleGMTicketCompleteCommand,          "", NULL },
+            { "assign",         SEC_GAMEMASTER,     true,  &HandleGMTicketAssignToCommand,          "", NULL },
+            { "close",          SEC_MODERATOR,      true,  &HandleGMTicketCloseByIdCommand,         "", NULL },
+            { "closedlist",     SEC_MODERATOR,      true,  &HandleGMTicketListClosedCommand,        "", NULL },
+            { "comment",        SEC_MODERATOR,      true,  &HandleGMTicketCommentCommand,           "", NULL },
+            { "complete",       SEC_MODERATOR,      true,  &HandleGMTicketCompleteCommand,          "", NULL },
             { "delete",         SEC_ADMINISTRATOR,  true,  &HandleGMTicketDeleteByIdCommand,        "", NULL },
-            { "escalate",       SEC_GM,      true,  &HandleGMTicketEscalateCommand,          "", NULL },
-            { "escalatedlist",  SEC_HGM,     true,  &HandleGMTicketListEscalatedCommand,     "", NULL },
-            { "list",           SEC_GM,      true,  &HandleGMTicketListCommand,              "", NULL },
-            { "onlinelist",     SEC_GM,      true,  &HandleGMTicketListOnlineCommand,        "", NULL },
+            { "escalate",       SEC_MODERATOR,      true,  &HandleGMTicketEscalateCommand,          "", NULL },
+            { "escalatedlist",  SEC_GAMEMASTER,     true,  &HandleGMTicketListEscalatedCommand,     "", NULL },
+            { "list",           SEC_MODERATOR,      true,  &HandleGMTicketListCommand,              "", NULL },
+            { "onlinelist",     SEC_MODERATOR,      true,  &HandleGMTicketListOnlineCommand,        "", NULL },
             { "reset",          SEC_ADMINISTRATOR,  true,  &HandleGMTicketResetCommand,             "", NULL },
-            { "response",       SEC_GM,      true,  NULL,                                    "", ticketResponseCommandTable },
+            { "response",       SEC_MODERATOR,      true,  NULL,                                    "", ticketResponseCommandTable },
             { "togglesystem",   SEC_ADMINISTRATOR,  true,  &HandleToggleGMTicketSystem,             "", NULL },
-            { "unassign",       SEC_HGM,     true,  &HandleGMTicketUnAssignCommand,          "", NULL },
-            { "viewid",         SEC_GM,      true,  &HandleGMTicketGetByIdCommand,           "", NULL },
-            { "viewname",       SEC_GM,      true,  &HandleGMTicketGetByNameCommand,         "", NULL },
+            { "unassign",       SEC_GAMEMASTER,     true,  &HandleGMTicketUnAssignCommand,          "", NULL },
+            { "viewid",         SEC_MODERATOR,      true,  &HandleGMTicketGetByIdCommand,           "", NULL },
+            { "viewname",       SEC_MODERATOR,      true,  &HandleGMTicketGetByNameCommand,         "", NULL },
             { NULL,             0,                  false, NULL,                                    "", NULL }
         };
         static ChatCommand commandTable[] =
         {
-            { "ticket",         SEC_GM,      false, NULL,                                    "", ticketCommandTable },
+            { "ticket",         SEC_MODERATOR,      false, NULL,                                    "", ticketCommandTable },
             { NULL,             0,                  false, NULL,                                    "", NULL }
         };
         return commandTable;

@@ -130,10 +130,12 @@ void SmartScript::ProcessEventsFor(SMART_EVENT e, Unit* unit, uint32 var0, uint3
 
         if (eventType == e/* && (!(*i).event.event_phase_mask || IsInPhase((*i).event.event_phase_mask)) && !((*i).event.event_flags & SMART_EVENT_FLAG_NOT_REPEATABLE && (*i).runOnce)*/)
         {
+            bool meets = true;
             ConditionList conds = sConditionMgr->GetConditionsForSmartEvent((*i).entryOrGuid, (*i).event_id, (*i).source_type);
             ConditionSourceInfo info = ConditionSourceInfo(unit, GetBaseObject());
+            meets = sConditionMgr->IsObjectMeetToConditions(info, conds);
 
-            if (sConditionMgr->IsObjectMeetToConditions(info, conds))
+            if (meets)
                 ProcessEvent(*i, unit, var0, var1, bvar, spell, gob);
         }
     }
@@ -1963,13 +1965,6 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
            break;
         }
-        case SMART_ACTION_SET_HEALTH_REGEN:
-        {
-            if (!me || me->GetTypeId() != TYPEID_UNIT)
-                break;
-            me->setRegeneratingHealth(e.action.setHealthRegen.regenHealth ? true : false);
-            break;
-        }
         default:
             sLog->outError(LOG_FILTER_SQL, "SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
             break;
@@ -2821,11 +2816,9 @@ void SmartScript::InitTimer(SmartScriptHolder& e)
         case SMART_EVENT_UPDATE:
         case SMART_EVENT_UPDATE_IC:
         case SMART_EVENT_UPDATE_OOC:
-            RecalcTimer(e, e.event.minMaxRepeat.min, e.event.minMaxRepeat.max);
-            break;
-        case SMART_EVENT_IC_LOS:
         case SMART_EVENT_OOC_LOS:
-            RecalcTimer(e, e.event.los.cooldownMin, e.event.los.cooldownMax);
+        case SMART_EVENT_IC_LOS:
+            RecalcTimer(e, e.event.minMaxRepeat.min, e.event.minMaxRepeat.max);
             break;
         default:
             e.active = true;

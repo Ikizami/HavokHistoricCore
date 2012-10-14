@@ -46,7 +46,6 @@ set(ace_STAT_SRCS
   Codeset_IBM1047.cpp
   Codeset_Registry.cpp
   Codeset_Registry_db.cpp
-  Condition_Attributes.cpp
   Condition_Recursive_Thread_Mutex.cpp
   Condition_Thread_Mutex.cpp
   Configuration.cpp
@@ -54,6 +53,7 @@ set(ace_STAT_SRCS
   Connection_Recycling_Strategy.cpp
   Containers.cpp
   Copy_Disabled.cpp
+  Countdown_Time.cpp
   Date_Time.cpp
   DEV.cpp
   DEV_Addr.cpp
@@ -73,7 +73,6 @@ set(ace_STAT_SRCS
   Encoding_Converter_Factory.cpp
   Event.cpp
   Event_Handler.cpp
-  Event_Handler_Handle_Timeout_Upcall.cpp
   FIFO.cpp
   FIFO_Recv.cpp
   FIFO_Recv_Msg.cpp
@@ -90,6 +89,7 @@ set(ace_STAT_SRCS
   Functor.cpp
   Functor_String.cpp
   Get_Opt.cpp
+  gethrtime.cpp
   Handle_Ops.cpp
   Handle_Set.cpp
   Hashable.cpp
@@ -289,7 +289,6 @@ set(ace_STAT_SRCS
   Thread_Mutex.cpp
   Thread_Semaphore.cpp
   Throughput_Stats.cpp
-  Time_Policy.cpp
   Time_Value.cpp
   Timeprobe.cpp
   TLI.cpp

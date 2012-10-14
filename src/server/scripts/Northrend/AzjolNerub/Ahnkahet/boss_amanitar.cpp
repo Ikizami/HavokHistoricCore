@@ -15,6 +15,10 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Comment:  Find correct mushrooms spell to make them visible - buffs of the mushrooms not ever applied to the users...
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ahnkahet.h"
@@ -30,24 +34,12 @@ enum Spells
     SPELL_POISONOUS_MUSHROOM_VISUAL_AREA          = 61566, // Self
     SPELL_POISONOUS_MUSHROOM_VISUAL_AURA          = 56741, // Self
     SPELL_PUTRID_MUSHROOM                         = 31690, // To make the mushrooms visible
-    SPELL_POWER_MUSHROOM_VISUAL_AURA              = 56740,
 };
 
 enum Creatures
 {
-    NPC_HEALTHY_MUSHROOM                            = 30391,
-    NPC_POISONOUS_MUSHROOM                          = 30435,
-    NPC_TRIGGER                                     = 19656
-};
-
-enum event
-{
-    EVENT_SPAWN = 1,
-    EVENT_MINI,
-    EVENT_ROOT,
-    EVENT_BASH,
-    EVENT_BOLT,
-    EVENT_AURA
+    NPC_HEALTHY_MUSHROOM                          = 30391,
+    NPC_POISONOUS_MUSHROOM                        = 30435
 };
 
 class boss_amanitar : public CreatureScript
@@ -55,118 +47,110 @@ class boss_amanitar : public CreatureScript
 public:
     boss_amanitar() : CreatureScript("boss_amanitar") { }
 
-    struct boss_amanitarAI : public BossAI
+    struct boss_amanitarAI : public ScriptedAI
     {
-        boss_amanitarAI(Creature* creature) : BossAI(creature, DATA_AMANITAR) { }
+        boss_amanitarAI(Creature* creature) : ScriptedAI(creature)
+        {
+            instance = creature->GetInstanceScript();
+            bFirstTime = true;
+        }
+
+        InstanceScript* instance;
+
+        uint32 uiRootTimer;
+        uint32 uiBashTimer;
+        uint32 uiBoltTimer;
+        uint32 uiSpawnTimer;
+
+        bool bFirstTime;
 
         void Reset()
         {
-            _Reset();
+            uiRootTimer = urand(5*IN_MILLISECONDS, 9*IN_MILLISECONDS);
+            uiBashTimer = urand(10*IN_MILLISECONDS, 14*IN_MILLISECONDS);
+            uiBoltTimer = urand(15*IN_MILLISECONDS, 30*IN_MILLISECONDS);
+            uiSpawnTimer = 0;
 
             me->SetMeleeDamageSchool(SPELL_SCHOOL_NATURE);
             me->ApplySpellImmune(0, IMMUNITY_SCHOOL, SPELL_SCHOOL_MASK_NATURE, true);
-            summons.DespawnAll();
 
             if (instance)
             {
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MINI);
-                instance->SetData(DATA_AMANITAR_EVENT, NOT_STARTED);
+                if (!bFirstTime)
+                    instance->SetData(DATA_AMANITAR_EVENT, FAIL);
+                else
+                    bFirstTime = false;
             }
         }
 
-        void JustDied(Unit* /*Killer*/)
+        void JustDied(Unit* /*killer*/)
         {
             if (instance)
             {
-                _JustDied();
                 instance->SetData(DATA_AMANITAR_EVENT, DONE);
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MINI);
-                summons.DespawnAll();
             }
         }
 
         void EnterCombat(Unit* /*who*/)
         {
-            _EnterCombat();
-
-            events.ScheduleEvent(EVENT_ROOT, urand(5,9)*IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_BASH, urand(10,14)*IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_BOLT, urand(15,20)*IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_MINI, urand(12,18)*IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_SPAWN, 5 *IN_MILLISECONDS);
-
-            me->SetInCombatWithZone();
             if (instance)
                 instance->SetData(DATA_AMANITAR_EVENT, IN_PROGRESS);
+
+            DoCast(me, SPELL_MINI, false);
         }
 
         void SpawnAdds()
         {
-            uint8 u = 0;
-
             for (uint8 i = 0; i < 30; ++i)
             {
-                Position pos;
-                me->GetPosition(&pos);
-                me->GetRandomNearPosition(pos, 30.0f);
-                pos.m_positionZ = me->GetMap()->GetHeight(pos.GetPositionX(), pos.GetPositionY(), MAX_HEIGHT) + 2.0f;
+                Unit* victim = SelectTarget(SELECT_TARGET_RANDOM, 0);
 
-                if (Creature* trigger = me->SummonCreature(NPC_TRIGGER, pos))
+                if (victim)
                 {
-                    Creature* temp1 = trigger->FindNearestCreature(NPC_HEALTHY_MUSHROOM, 4.0f, true);
-                    Creature* temp2 = trigger->FindNearestCreature(NPC_POISONOUS_MUSHROOM, 4.0f, true);
-                    if (temp1 || temp2)
-                    {
-                        trigger->DisappearAndDie();
-                    }
-                    else
-                    {
-                        u = 1 - u;
-                        trigger->DisappearAndDie();
-                        me->SummonCreature(u > 0 ? NPC_POISONOUS_MUSHROOM : NPC_HEALTHY_MUSHROOM, pos, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60*IN_MILLISECONDS);
-                    }
+                    Position pos;
+                    victim->GetPosition(&pos);
+                    me->GetRandomNearPosition(pos, float(urand(5, 80)));
+                    me->SummonCreature(NPC_POISONOUS_MUSHROOM, pos, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30*IN_MILLISECONDS);
+                    me->GetRandomNearPosition(pos, float(urand(5, 80)));
+                    me->SummonCreature(NPC_HEALTHY_MUSHROOM, pos, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30*IN_MILLISECONDS);
                 }
             }
         }
 
         void UpdateAI(const uint32 diff)
         {
+            //Return since we have no target
             if (!UpdateVictim())
                 return;
 
-            events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            while (uint32 eventId = events.ExecuteEvent())
+            if (uiSpawnTimer <= diff)
             {
-                switch (eventId)
-                {
-                    case EVENT_SPAWN:
-                        SpawnAdds();
-                        events.ScheduleEvent(EVENT_SPAWN, 20*IN_MILLISECONDS);
-                        break;
-                    case EVENT_MINI:
-                        DoCast(SPELL_MINI);
-                        events.ScheduleEvent(EVENT_MINI, urand(25,30)*IN_MILLISECONDS);
-                        break;
-                    case EVENT_ROOT:
-                        DoCast(SelectTarget(SELECT_TARGET_RANDOM,0, 100, true),SPELL_ENTANGLING_ROOTS,true);
-                        events.ScheduleEvent(EVENT_ROOT, urand(10,15)*IN_MILLISECONDS);
-                        break;
-                    case EVENT_BASH:
-                        DoCastVictim(SPELL_BASH);
-                        events.ScheduleEvent(EVENT_BASH, urand(7,12)*IN_MILLISECONDS);
-                        break;
-                    case EVENT_BOLT:
-                        DoCast(SelectTarget(SELECT_TARGET_RANDOM,0, 100, true),SPELL_VENOM_BOLT_VOLLEY,true);
-                        events.ScheduleEvent(EVENT_BOLT, urand(18,22)*IN_MILLISECONDS);
-                        break;
-                    default:
-                        break;
-                }
-            }
+                SpawnAdds();
+                uiSpawnTimer = urand(35*IN_MILLISECONDS, 40*IN_MILLISECONDS);
+            } else uiSpawnTimer -= diff;
+
+            if (uiRootTimer <= diff)
+            {
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                    DoCast(target, SPELL_ENTANGLING_ROOTS);
+                uiRootTimer = urand(15*IN_MILLISECONDS, 30*IN_MILLISECONDS);
+            } else uiRootTimer -= diff;
+
+            if (uiBashTimer <= diff)
+            {
+                DoCastVictim(SPELL_BASH);
+                uiBashTimer = urand(15*IN_MILLISECONDS, 30*IN_MILLISECONDS);
+            } else uiBashTimer -= diff;
+
+            if (uiBoltTimer <= diff)
+            {
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                    DoCast(target, SPELL_VENOM_BOLT_VOLLEY);
+                uiBoltTimer = urand(15*IN_MILLISECONDS, 30*IN_MILLISECONDS);
+            } else uiBoltTimer -= diff;
+
             DoMeleeAttackIfReady();
         }
     };
@@ -186,26 +170,30 @@ public:
     {
         mob_amanitar_mushroomsAI(Creature* creature) : Scripted_NoMovementAI(creature) {}
 
-        EventMap events;
+        uint32 uiAuraTimer;
+        uint32 uiDeathTimer;
 
         void Reset()
         {
-            events.Reset();
-            events.ScheduleEvent(EVENT_AURA, 1*IN_MILLISECONDS);
-
-            me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
-            DoCast(SPELL_PUTRID_MUSHROOM);
+            DoCast(me, SPELL_PUTRID_MUSHROOM, true); // Hack, to make the mushrooms visible, can't find orig. spell...
 
             if (me->GetEntry() == NPC_POISONOUS_MUSHROOM)
-                DoCast(SPELL_POISONOUS_MUSHROOM_VISUAL_AURA);
-            else
-                DoCast(SPELL_POWER_MUSHROOM_VISUAL_AURA);
+                DoCast(me, SPELL_POISONOUS_MUSHROOM_VISUAL_AURA, true);
+
+            uiAuraTimer = 0;
+            uiDeathTimer = 30*IN_MILLISECONDS;
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+        void JustDied(Unit* killer)
         {
-            if (damage >= me->GetHealth() && me->GetEntry() == NPC_HEALTHY_MUSHROOM)
-                DoCast(me, SPELL_HEALTHY_MUSHROOM_POTENT_FUNGUS, true);
+            if (!killer)
+                return;
+
+            if (me->GetEntry() == NPC_HEALTHY_MUSHROOM && killer->GetTypeId() == TYPEID_PLAYER)
+            {
+                me->InterruptNonMeleeSpells(false);
+                DoCast(killer, SPELL_HEALTHY_MUSHROOM_POTENT_FUNGUS, false);
+            }
         }
 
         void EnterCombat(Unit* /*who*/) {}
@@ -213,30 +201,18 @@ public:
 
         void UpdateAI(const uint32 diff)
         {
-            if (!UpdateVictim())
-                return;
-
-            events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            while (uint32 eventId = events.ExecuteEvent())
+            if (me->GetEntry() == NPC_POISONOUS_MUSHROOM)
             {
-                switch (eventId)
+                if (uiAuraTimer <= diff)
                 {
-                    case EVENT_AURA:
-                        if (me->GetEntry() == NPC_POISONOUS_MUSHROOM)
-                        {
-                            DoCast(me, SPELL_POISONOUS_MUSHROOM_VISUAL_AREA, true);
-                            DoCast(me, SPELL_POISONOUS_MUSHROOM_POISON_CLOUD);
-                        }
-                        events.ScheduleEvent(EVENT_AURA, 7*IN_MILLISECONDS);
-                        break;
-                    default:
-                        break;
-                }
+                    DoCast(me, SPELL_POISONOUS_MUSHROOM_VISUAL_AREA, true);
+                    DoCast(me, SPELL_POISONOUS_MUSHROOM_POISON_CLOUD, false);
+                    uiAuraTimer = 7*IN_MILLISECONDS;
+                } else uiAuraTimer -= diff;
             }
+            if (uiDeathTimer <= diff)
+                me->DisappearAndDie();
+            else uiDeathTimer -= diff;
         }
     };
 
@@ -248,6 +224,6 @@ public:
 
 void AddSC_boss_amanitar()
 {
-    new boss_amanitar();
-    new mob_amanitar_mushrooms();
+    new boss_amanitar;
+    new mob_amanitar_mushrooms;
 }

@@ -47,7 +47,6 @@ enum eEnums
     SPELL_CHARGE                                = 43651,
     SPELL_STONE_STRIKE                          = 48583,
     SPELL_SUMMON_SKARVALD_GHOST                 = 48613,
-    SPELL_ENRAGE                                = 48193,
     MOB_SKARVALD_GHOST                          = 27390,
 //Spells of Dalronn and his Ghost
     MOB_DALRONN_THE_CONTROLLER                  = 24201,
@@ -57,20 +56,6 @@ enum eEnums
     SPELL_DEBILITATE                            = 43650,
     SPELL_SUMMON_DALRONN_GHOST                  = 48612,
     MOB_DALRONN_GHOST                           = 27389
-};
-
-class SkarvaldChargePredicate
-{
-   public:
-      SkarvaldChargePredicate(Unit* unit) : me(unit) {}
-
-    bool operator() (WorldObject* object) const
-    {
-        return object->GetDistance2d(me) >= 5.0f && object->GetDistance2d(me) <= 30.0f;
-    }
-
-    private:
-        Unit* me;
 };
 
 class boss_skarvald_the_constructor : public CreatureScript
@@ -98,7 +83,6 @@ public:
         uint32 Response_Timer;
         uint32 Check_Timer;
         bool Dalronn_isDead;
-        bool Enraged;
 
         void Reset()
         {
@@ -106,7 +90,6 @@ public:
             StoneStrike_Timer = 10000;
             Dalronn_isDead = false;
             Check_Timer = 5000;
-            Enraged = false;
 
             ghost = (me->GetEntry() == MOB_SKARVALD_GHOST);
             if (!ghost && instance)
@@ -130,15 +113,6 @@ public:
                     dalronn->getThreatManager().addThreat(who, 0.0f);
 
                 instance->SetData(DATA_SKARVALD_DALRONN_EVENT, IN_PROGRESS);
-            }
-        }
-
-        void DamageTaken(Unit* /*attacker*/, uint32& damage)
-        {
-            if (!Enraged && !ghost && me->HealthBelowPctDamaged(15, damage))
-            {
-                Enraged = true;
-                DoCast(me, SPELL_ENRAGE);
             }
         }
 
@@ -220,7 +194,7 @@ public:
 
             if (Charge_Timer <= diff)
             {
-                DoCast(SelectTarget(SELECT_TARGET_RANDOM, 0, SkarvaldChargePredicate(me)), SPELL_CHARGE);
+                DoCast(SelectTarget(SELECT_TARGET_RANDOM, 1), SPELL_CHARGE);
                 Charge_Timer = 5000+rand()%5000;
             } else Charge_Timer -= diff;
 
@@ -230,8 +204,7 @@ public:
                 StoneStrike_Timer = 5000+rand()%5000;
             } else StoneStrike_Timer -= diff;
 
-            if (!me->HasUnitState(UNIT_STATE_CASTING))
-                DoMeleeAttackIfReady();
+            DoMeleeAttackIfReady();
         }
     };
 

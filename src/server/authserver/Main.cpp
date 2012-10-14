@@ -15,13 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-/**
-* @file main.cpp
-* @brief Authentication Server main program
-*
-* This file contains the main program for the
-* authentication server
-*/
+
 #include <ace/Dev_Poll_Reactor.h>
 #include <ace/TP_Reactor.h>
 #include <ace/ACE.h>
@@ -50,7 +44,7 @@ bool stopEvent = false;                                     // Setting it to tru
 
 LoginDatabaseWorkerPool LoginDatabase;                      // Accessor to the auth server database
 
-/// Handle authserver's termination signals
+// Handle authserver's termination signals
 class AuthServerSignalHandler : public Trinity::SignalHandler
 {
 public:
@@ -74,7 +68,7 @@ void usage(const char *prog)
         prog);
 }
 
-/// Launch the auth server
+// Launch the auth server
 extern int main(int argc, char **argv)
 {
     // Command line parsing to get the configuration file name
@@ -238,7 +232,7 @@ extern int main(int argc, char **argv)
     return 0;
 }
 
-/// Initialize connection to the database
+// Initialize connection to the database
 bool StartDB()
 {
     MySQL::Library_Init();
@@ -276,7 +270,6 @@ bool StartDB()
     return true;
 }
 
-/// Close the connection to the database
 void StopDB()
 {
     LoginDatabase.Close();

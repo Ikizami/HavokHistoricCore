@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "AccountMgr.h"
 #include "DatabaseEnv.h"
+#include "AccountMgr.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
 #include "Util.h"
@@ -274,7 +274,10 @@ std::string CalculateShaPassHash(std::string& name, std::string& password)
     sha.UpdateData(password);
     sha.Finalize();
 
-    return ByteArrayToHexStr(sha.GetDigest(), sha.GetLength());
+    std::string encoded;
+    hexEncodeByteArray(sha.GetDigest(), sha.GetLength(), encoded);
+
+    return encoded;
 }
 
 bool IsPlayerAccount(uint32 gmlevel)
@@ -284,12 +287,12 @@ bool IsPlayerAccount(uint32 gmlevel)
 
 bool IsModeratorAccount(uint32 gmlevel)
 {
-    return gmlevel >= SEC_GM && gmlevel <= SEC_CONSOLE;
+    return gmlevel >= SEC_MODERATOR && gmlevel <= SEC_CONSOLE;
 }
 
 bool IsGMAccount(uint32 gmlevel)
 {
-    return gmlevel >= SEC_HGM && gmlevel <= SEC_CONSOLE;
+    return gmlevel >= SEC_GAMEMASTER && gmlevel <= SEC_CONSOLE;
 }
 
 bool IsAdminAccount(uint32 gmlevel)
@@ -299,12 +302,7 @@ bool IsAdminAccount(uint32 gmlevel)
 
 bool IsConsoleAccount(uint32 gmlevel)
 {
-    return gmlevel == SEC_CONSOLE && gmlevel <= SEC_OWNER;
-}
-
-bool IsOwnerAccount(uint32 gmlevel)
-{
-    return gmlevel == SEC_OWNER;
+    return gmlevel == SEC_CONSOLE;
 }
 
 } // Namespace AccountMgr

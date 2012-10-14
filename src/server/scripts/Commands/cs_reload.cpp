@@ -64,9 +64,6 @@ public:
         };
         static ChatCommand reloadCommandTable[] =
         {
-			{ "item",						  SEC_ADMINISTRATOR, true,  &HandleReloadItemCommand,				        "", NULL },
-			{ "creature",					  SEC_ADMINISTRATOR, true,  &HandleReloadCreatureCommand,				    "", NULL },
-			{ "quest",						  SEC_ADMINISTRATOR, true,  &HandleReloadQuestCommand,						"", NULL },
             { "auctions",                     SEC_ADMINISTRATOR, true,  &HandleReloadAuctionsCommand,                   "", NULL },
             { "access_requirement",           SEC_ADMINISTRATOR, true,  &HandleReloadAccessRequirementCommand,          "", NULL },
             { "achievement_criteria_data",    SEC_ADMINISTRATOR, true,  &HandleReloadAchievementCriteriaDataCommand,    "", NULL },
@@ -84,7 +81,7 @@ public:
             { "creature_ai_summons",          SEC_ADMINISTRATOR, true,  &HandleReloadEventAISummonsCommand,             "", NULL },
             { "creature_ai_texts",            SEC_ADMINISTRATOR, true,  &HandleReloadEventAITextsCommand,               "", NULL },
             { "creature_involvedrelation",    SEC_ADMINISTRATOR, true,  &HandleReloadCreatureQuestInvRelationsCommand,  "", NULL },
-            { "creature_linked_respawn",      SEC_HGM,    true,  &HandleReloadLinkedRespawnCommand,              "", NULL },
+            { "creature_linked_respawn",      SEC_GAMEMASTER,    true,  &HandleReloadLinkedRespawnCommand,              "", NULL },
             { "creature_loot_template",       SEC_ADMINISTRATOR, true,  &HandleReloadLootTemplatesCreatureCommand,      "", NULL },
             { "creature_onkill_reputation",   SEC_ADMINISTRATOR, true,  &HandleReloadOnKillReputationCommand,           "", NULL },
             { "creature_questrelation",       SEC_ADMINISTRATOR, true,  &HandleReloadCreatureQuestRelationsCommand,     "", NULL },
@@ -333,37 +330,6 @@ public:
         HandleReloadLocalesQuestCommand(handler, "a");
         return true;
     }
-	
-	static bool HandleReloadItemCommand(ChatHandler* handler, const char* /*args*/)
-	{
-		sLog->outInfo(LOG_FILTER_GENERAL, "Reloading Item Table");
-		sObjectMgr->LoadItemTemplates();
-		handler->SendSysMessage("The item table has been reloaded, the server may experience lag for a few seconds.");
-        return true;
-    }
-
-	static bool HandleReloadCreatureCommand(ChatHandler* handler, const char* /*args*/)
-    {
-		sLog->outInfo(LOG_FILTER_GENERAL, "Reloading Creature tables");
-		sObjectMgr->LoadCreatureTemplates();
-        handler->SendSysMessage("The Creature tables has been reloaded, the server may experience lag for a few seconds.");
-        return true;
-    }
-
-	static bool HandleReloadQuestCommand(ChatHandler* handler, const char* /*args*/)
-    {
-		sLog->outInfo(LOG_FILTER_GENERAL, "Reloading Quest Table");
-		sObjectMgr->LoadQuestRelations();
-		sObjectMgr->LoadCreatureQuestRelations();
-		sObjectMgr->LoadCreatureInvolvedRelations();
-		sObjectMgr->LoadGameobjectQuestRelations();
-		sObjectMgr->LoadGameobjectInvolvedRelations();
-		sObjectMgr->LoadQuestAreaTriggers();
-		sObjectMgr->LoadQuests();
-		sObjectMgr->LoadGameObjectForQuests();
-        handler->SendSysMessage("The Quest table has been reloaded, the server may experience lag for a few seconds.");
-        return true;
-    }
 
     static bool HandleReloadConfigCommand(ChatHandler* handler, const char* /*args*/)
     {
@@ -442,9 +408,9 @@ public:
         if (!*args)
             return false;
 
-        Tokenizer entries(std::string(args), ' ');
+        Tokens entries(std::string(args), ' ');
 
-        for (Tokenizer::const_iterator itr = entries.begin(); itr != entries.end(); ++itr)
+        for (Tokens::const_iterator itr = entries.begin(); itr != entries.end(); ++itr)
         {
             uint32 entry = uint32(atoi(*itr));
 

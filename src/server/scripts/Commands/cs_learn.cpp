@@ -47,11 +47,11 @@ public:
         static ChatCommand learnAllCommandTable[] =
         {
             { "my",             SEC_ADMINISTRATOR,  false, NULL,                                "",  learnAllMyCommandTable },
-            { "gm",             SEC_HGM,     false, &HandleLearnAllGMCommand,            "", NULL },
-            { "crafts",         SEC_HGM,     false, &HandleLearnAllCraftsCommand,        "", NULL },
-            { "default",        SEC_GM,      false, &HandleLearnAllDefaultCommand,       "", NULL },
-            { "lang",           SEC_GM,      false, &HandleLearnAllLangCommand,          "", NULL },
-            { "recipes",        SEC_HGM,     false, &HandleLearnAllRecipesCommand,       "", NULL },
+            { "gm",             SEC_GAMEMASTER,     false, &HandleLearnAllGMCommand,            "", NULL },
+            { "crafts",         SEC_GAMEMASTER,     false, &HandleLearnAllCraftsCommand,        "", NULL },
+            { "default",        SEC_MODERATOR,      false, &HandleLearnAllDefaultCommand,       "", NULL },
+            { "lang",           SEC_MODERATOR,      false, &HandleLearnAllLangCommand,          "", NULL },
+            { "recipes",        SEC_GAMEMASTER,     false, &HandleLearnAllRecipesCommand,       "", NULL },
             { NULL,             0,                  false, NULL,                                "", NULL }
         };
 
@@ -64,7 +64,7 @@ public:
 
         static ChatCommand commandTable[] =
         {
-            { "learn",          SEC_GM,      false, NULL,                                "", learnCommandTable },
+            { "learn",          SEC_MODERATOR,      false, NULL,                                "", learnCommandTable },
             { "unlearn",        SEC_ADMINISTRATOR,  false, &HandleUnLearnCommand,               "", NULL },
             { NULL,             0,                  false, NULL,                                "", NULL }
         };

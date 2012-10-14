@@ -35,15 +35,15 @@ public:
     {
         static ChatCommand eventCommandTable[] =
         {
-            { "activelist",     SEC_HGM,     true,  &HandleEventActiveListCommand,     "", NULL },
-            { "start",          SEC_HGM,     true,  &HandleEventStartCommand,          "", NULL },
-            { "stop",           SEC_HGM,     true,  &HandleEventStopCommand,           "", NULL },
-            { "",               SEC_HGM,     true,  &HandleEventInfoCommand,           "", NULL },
+            { "activelist",     SEC_GAMEMASTER,     true,  &HandleEventActiveListCommand,     "", NULL },
+            { "start",          SEC_GAMEMASTER,     true,  &HandleEventStartCommand,          "", NULL },
+            { "stop",           SEC_GAMEMASTER,     true,  &HandleEventStopCommand,           "", NULL },
+            { "",               SEC_GAMEMASTER,     true,  &HandleEventInfoCommand,           "", NULL },
             { NULL,             0,                  false, NULL,                              "", NULL }
         };
         static ChatCommand commandTable[] =
         {
-            { "event",          SEC_HGM,     false, NULL,                  "", eventCommandTable },
+            { "event",          SEC_GAMEMASTER,     false, NULL,                  "", eventCommandTable },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         return commandTable;

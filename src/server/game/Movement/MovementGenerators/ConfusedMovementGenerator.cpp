@@ -32,7 +32,6 @@
 template<class T>
 void ConfusedMovementGenerator<T>::Initialize(T &unit)
 {
-    unit.StopMoving();
     float const wander_distance = 4;
     float x = unit.GetPositionX();
     float y = unit.GetPositionY();

@@ -16,6 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Battleground.h"
 #include "BattlegroundNA.h"
 #include "Language.h"
 #include "Object.h"
@@ -61,7 +62,11 @@ void BattlegroundNA::StartingEventOpenDoors()
 void BattlegroundNA::AddPlayer(Player* player)
 {
     Battleground::AddPlayer(player);
-    PlayerScores[player->GetGUID()] = new BattlegroundScore;
+    //create score and add it to map, default values are set in constructor
+    BattlegroundNAScore* sc = new BattlegroundNAScore;
+
+    PlayerScores[player->GetGUID()] = sc;
+
     UpdateArenaWorldState();
 }
 
@@ -93,24 +98,30 @@ void BattlegroundNA::HandleKillPlayer(Player* player, Player* killer)
 
 bool BattlegroundNA::HandlePlayerUnderMap(Player* player)
 {
-    player->TeleportTo(GetMapId(), 4055.504395f, 2919.660645f, 13.611241f, player->GetOrientation());
+    player->TeleportTo(GetMapId(), 4055.504395f, 2919.660645f, 13.611241f, player->GetOrientation(), false);
     return true;
 }
 
-void BattlegroundNA::HandleAreaTrigger(Player* player, uint32 trigger)
+void BattlegroundNA::HandleAreaTrigger(Player* Source, uint32 Trigger)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
 
-    switch (trigger)
+    //uint32 SpellId = 0;
+    //uint64 buff_guid = 0;
+    switch (Trigger)
     {
         case 4536:                                          // buff trigger?
         case 4537:                                          // buff trigger?
             break;
         default:
-            Battleground::HandleAreaTrigger(player, trigger);
+            sLog->outError(LOG_FILTER_BATTLEGROUND, "WARNING: Unhandled AreaTrigger in Battleground: %u", Trigger);
+            Source->GetSession()->SendAreaTriggerMessage("Warning: Unhandled AreaTrigger in Battleground: %u", Trigger);
             break;
     }
+
+    //if (buff_guid)
+    //    HandleTriggerBuff(buff_guid, Source);
 }
 
 void BattlegroundNA::FillInitialWorldStates(WorldPacket &data)
@@ -142,3 +153,13 @@ bool BattlegroundNA::SetupBattleground()
 
     return true;
 }
+
+/*
+20:12:14 id:036668 [S2C] SMSG_INIT_WORLD_STATES (706 = 0x02C2) len: 86
+0000: 2f 02 00 00 72 0e 00 00 00 00 00 00 09 00 11 0a  |  /...r...........
+0010: 00 00 01 00 00 00 0f 0a 00 00 00 00 00 00 10 0a  |  ................
+0020: 00 00 00 00 00 00 d4 08 00 00 00 00 00 00 d8 08  |  ................
+0030: 00 00 00 00 00 00 d7 08 00 00 00 00 00 00 d6 08  |  ................
+0040: 00 00 00 00 00 00 d5 08 00 00 00 00 00 00 d3 08  |  ................
+0050: 00 00 00 00 00 00                                |  ......
+*/

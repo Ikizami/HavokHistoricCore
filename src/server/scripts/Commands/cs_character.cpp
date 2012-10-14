@@ -52,21 +52,21 @@ public:
 
         static ChatCommand characterCommandTable[] =
         {
-            { "customize",      SEC_HGM,     true,  &HandleCharacterCustomizeCommand,       "", NULL },
-            { "changefaction",  SEC_HGM,     true,  &HandleCharacterChangeFactionCommand,   "", NULL },
-            { "changerace",     SEC_HGM,     true,  &HandleCharacterChangeRaceCommand,      "", NULL },
-            { "deleted",        SEC_HGM,     true,  NULL,                                   "", characterDeletedCommandTable },
+            { "customize",      SEC_GAMEMASTER,     true,  &HandleCharacterCustomizeCommand,       "", NULL },
+            { "changefaction",  SEC_GAMEMASTER,     true,  &HandleCharacterChangeFactionCommand,   "", NULL },
+            { "changerace",     SEC_GAMEMASTER,     true,  &HandleCharacterChangeRaceCommand,      "", NULL },
+            { "deleted",        SEC_GAMEMASTER,     true,  NULL,                                   "", characterDeletedCommandTable },
             { "erase",          SEC_CONSOLE,        true,  &HandleCharacterEraseCommand,           "", NULL },
             { "level",          SEC_ADMINISTRATOR,  true,  &HandleCharacterLevelCommand,           "", NULL },
-            { "rename",         SEC_HGM,     true,  &HandleCharacterRenameCommand,          "", NULL },
-            { "reputation",     SEC_HGM,     true,  &HandleCharacterReputationCommand,      "", NULL },
-            { "titles",         SEC_HGM,     true,  &HandleCharacterTitlesCommand,          "", NULL },
+            { "rename",         SEC_GAMEMASTER,     true,  &HandleCharacterRenameCommand,          "", NULL },
+            { "reputation",     SEC_GAMEMASTER,     true,  &HandleCharacterReputationCommand,      "", NULL },
+            { "titles",         SEC_GAMEMASTER,     true,  &HandleCharacterTitlesCommand,          "", NULL },
             { NULL,             0,                  false, NULL,                                   "", NULL }
         };
 
         static ChatCommand commandTable[] =
         {
-            { "character",      SEC_HGM,     true,  NULL,                                   "", characterCommandTable },
+            { "character",      SEC_GAMEMASTER,     true,  NULL,                                   "", characterCommandTable },
             { "levelup",        SEC_ADMINISTRATOR,  false, &HandleLevelUpCommand,                  "", NULL },
             { "pdump",          SEC_ADMINISTRATOR,  true,  NULL,                                   "", pdumpCommandTable },
             { NULL,             0,                  false, NULL,                                   "", NULL }

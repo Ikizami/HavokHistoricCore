@@ -485,9 +485,8 @@ enum SMART_ACTION
     SMART_ACTION_GO_SET_LOOT_STATE                  = 99,     // state
     SMART_ACTION_SEND_TARGET_TO_TARGET              = 100,    // id
     SMART_ACTION_SET_HOME_POS                       = 101,    // none
-    SMART_ACTION_SET_HEALTH_REGEN                   = 102,    // 0/1
 
-    SMART_ACTION_END                                = 103
+    SMART_ACTION_END                                = 102
 };
 
 struct SmartAction
@@ -912,11 +911,6 @@ struct SmartAction
             uint32 distance;
             uint32 angle;
         } setRangedMovement;
-
-        struct
-        {
-            uint32 regenHealth;
-        } setHealthRegen;
 
         //! Note for any new future actions
         //! All parameters must have type uint32

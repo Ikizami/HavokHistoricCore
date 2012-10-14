@@ -262,8 +262,6 @@ enum UnitRename
 #define MAX_SPELL_POSSESS       8
 #define MAX_SPELL_CONTROL_BAR   10
 
-#define MAX_AGGRO_RESET_TIME 10 // in seconds
-
 enum Swing
 {
     NOSWING                    = 0,
@@ -794,21 +792,21 @@ enum MeleeHitOutcome
 
 class DispelInfo
 {
+private:
+    Unit* const m_dispeller;
+    uint32 const m_dispellerSpellId;
+    uint8 m_chargesRemoved;
 public:
-    explicit DispelInfo(Unit* dispeller, uint32 dispellerSpellId, uint8 chargesRemoved) :
-    _dispellerUnit(dispeller), _dispellerSpell(dispellerSpellId), _chargesRemoved(chargesRemoved) {}
+    explicit DispelInfo(Unit* _dispeller, uint32 _dispellerSpellId, uint8 _chargesRemoved) :
+    m_dispeller(_dispeller), m_dispellerSpellId(_dispellerSpellId), m_chargesRemoved(_chargesRemoved) {}
 
-    Unit* GetDispeller() const { return _dispellerUnit; }
-    uint32 GetDispellerSpellId() const { return _dispellerSpell; }
-    uint8 GetRemovedCharges() const { return _chargesRemoved; }
+    Unit* GetDispeller() { return m_dispeller; }
+    uint32 GetDispellerSpellId() const { return m_dispellerSpellId; }
+    uint8 GetRemovedCharges() const { return m_chargesRemoved; }
     void SetRemovedCharges(uint8 amount)
     {
-        _chargesRemoved = amount;
+        m_chargesRemoved = amount;
     }
-private:
-    Unit* _dispellerUnit;
-    uint32 _dispellerSpell;
-    uint8 _chargesRemoved;
 };
 
 struct CleanDamage
@@ -1334,8 +1332,8 @@ class Unit : public WorldObject
         bool HealthAbovePct(int32 pct) const { return GetHealth() > CountPctFromMaxHealth(pct); }
         bool HealthAbovePctHealed(int32 pct, uint32 heal) const { return uint64(GetHealth()) + uint64(heal) > CountPctFromMaxHealth(pct); }
         float GetHealthPct() const { return GetMaxHealth() ? 100.f * GetHealth() / GetMaxHealth() : 0.0f; }
-        uint32 CountPctFromMaxHealth(int32 pct) const { return CalculatePct(GetMaxHealth(), pct); }
-        uint32 CountPctFromCurHealth(int32 pct) const { return CalculatePct(GetHealth(), pct); }
+        uint32 CountPctFromMaxHealth(int32 pct) const { return CalculatePctN(GetMaxHealth(), pct); }
+        uint32 CountPctFromCurHealth(int32 pct) const { return CalculatePctN(GetHealth(), pct); }
 
         void SetHealth(uint32 val);
         void SetMaxHealth(uint32 val);
@@ -2209,20 +2207,37 @@ class Unit : public WorldObject
 
         void SetTarget(uint64 guid)
         {
-            if (!_focusSpell)
+            if (!_targetLocked)
                 SetUInt64Value(UNIT_FIELD_TARGET, guid);
         }
 
-        // Handling caster facing during spellcast
-        void FocusTarget(Spell const* focusSpell, uint64 target);
-        void ReleaseFocus(Spell const* focusSpell);
+        void FocusTarget(Spell const* focusSpell, uint64 target)
+        {
+            // already focused
+            if (_focusSpell)
+                return;
+
+            _focusSpell = focusSpell;
+            _targetLocked = true;
+            SetUInt64Value(UNIT_FIELD_TARGET, target);
+        }
+
+        void ReleaseFocus(Spell const* focusSpell)
+        {
+            // focused to something else
+            if (focusSpell != _focusSpell)
+                return;
+
+            _focusSpell = NULL;
+            _targetLocked = false;
+            if (Unit* victim = getVictim())
+                SetUInt64Value(UNIT_FIELD_TARGET, victim->GetGUID());
+            else
+                SetUInt64Value(UNIT_FIELD_TARGET, 0);
+        }
 
         // Movement info
         Movement::MoveSpline * movespline;
-
-        // Part of Evade mechanics
-        time_t GetLastDamagedTime() const { return _lastDamagedTime; }
-        void SetLastDamagedTime(time_t val) { _lastDamagedTime = val; }
 
     protected:
         explicit Unit (bool isWorldObject);
@@ -2343,10 +2358,9 @@ class Unit : public WorldObject
         bool m_cleanupDone; // lock made to not add stuff after cleanup before delete
         bool m_duringRemoveFromWorld; // lock made to not add stuff after begining removing from world
 
-        Spell const* _focusSpell;   ///> Locks the target during spell cast for proper facing
+        Spell const* _focusSpell;
+        bool _targetLocked; // locks the target during spell cast for proper facing
         bool _isWalkingBeforeCharm; // Are we walking before we were charmed?
-
-        time_t _lastDamagedTime; // Part of Evade mechanics
 };
 
 namespace Trinity

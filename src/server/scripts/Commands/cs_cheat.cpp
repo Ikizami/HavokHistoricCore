@@ -36,21 +36,21 @@ public:
 
         static ChatCommand cheatCommandTable[] =
         {
-            { "god",            SEC_HGM,     false, &HandleGodModeCheatCommand,         "", NULL },
-            { "casttime",       SEC_HGM,     false, &HandleCasttimeCheatCommand,        "", NULL },
-            { "cooldown",       SEC_HGM,     false, &HandleCoolDownCheatCommand,        "", NULL },
-            { "power",          SEC_HGM,     false, &HandlePowerCheatCommand,           "", NULL },
-            { "waterwalk",      SEC_HGM,     false, &HandleWaterWalkCheatCommand,       "", NULL },
-            { "status",         SEC_HGM,     false, &HandleCheatStatusCommand,          "", NULL },
-            { "taxi",           SEC_HGM,     false, &HandleTaxiCheatCommand,            "", NULL },
-            { "explore",        SEC_HGM,     false, &HandleExploreCheatCommand,         "", NULL },
+            { "god",            SEC_GAMEMASTER,     false, &HandleGodModeCheatCommand,         "", NULL },
+            { "casttime",       SEC_GAMEMASTER,     false, &HandleCasttimeCheatCommand,        "", NULL },
+            { "cooldown",       SEC_GAMEMASTER,     false, &HandleCoolDownCheatCommand,        "", NULL },
+            { "power",          SEC_GAMEMASTER,     false, &HandlePowerCheatCommand,           "", NULL },
+            { "waterwalk",      SEC_GAMEMASTER,     false, &HandleWaterWalkCheatCommand,       "", NULL },
+            { "status",         SEC_GAMEMASTER,     false, &HandleCheatStatusCommand,          "", NULL },
+            { "taxi",           SEC_GAMEMASTER,     false, &HandleTaxiCheatCommand,            "", NULL },
+            { "explore",        SEC_GAMEMASTER,     false, &HandleExploreCheatCommand,         "", NULL },
             { NULL,             0,                  false, NULL,                               "", NULL }
 
         };
 
         static ChatCommand commandTable[] =
         {
-            { "cheat",          SEC_HGM,     false, NULL,                  "", cheatCommandTable },
+            { "cheat",          SEC_GAMEMASTER,     false, NULL,                  "", cheatCommandTable },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         return commandTable;

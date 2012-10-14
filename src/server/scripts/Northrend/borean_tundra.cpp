@@ -1667,6 +1667,7 @@ public:
 /*######
 ## npc_imprisoned_beryl_sorcerer
 ######*/
+
 enum eImprisionedBerylSorcerer
 {
     SPELL_NEURAL_NEEDLE             = 45634,
@@ -1691,79 +1692,103 @@ public:
     {
         npc_imprisoned_beryl_sorcererAI(Creature* creature) : ScriptedAI(creature) {}
 
-        uint32 rebuff;
+        uint64 CasterGUID;
+
+        uint32  uiStep;
+        uint32  uiPhase;
 
         void Reset()
         {
-            if (me->GetReactState() != REACT_PASSIVE)
-                me->SetReactState(REACT_PASSIVE);
-
-            rebuff = 0;
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            UpdateVictim();
-
-            if (rebuff <= diff)
-            {
-                if (!me->HasAura(SPELL_COSMETIC_ENSLAVE_CHAINS_SELF))
-                {
-                    DoCast(me, SPELL_COSMETIC_ENSLAVE_CHAINS_SELF);
-                }
-                rebuff = 180000;
-            }
-            else
-                rebuff -= diff;
-
-            DoMeleeAttackIfReady();
+            uiStep = 1;
+            uiPhase = 0;
+            CasterGUID = 0;
         }
 
         void EnterCombat(Unit* /*who*/)
         {
         }
 
-        void SpellHit(Unit* unit, const SpellInfo* spell)
+        void SpellHit(Unit* unit, const SpellInfo* pSpell)
         {
-            if (spell->Id == SPELL_NEURAL_NEEDLE && unit->GetTypeId() == TYPEID_PLAYER)
+            if (pSpell->Id == SPELL_NEURAL_NEEDLE && unit->GetTypeId() == TYPEID_PLAYER)
             {
-                if (Player* player = unit->ToPlayer())
-                {
-                    GotStinged(player->GetGUID());
-                }
+                ++uiPhase;
+                CasterGUID = unit->GetGUID();
             }
         }
 
-        void GotStinged(uint64 casterGUID)
+        void UpdateAI(const uint32 uiDiff)
         {
-            if (Player* caster = Player::GetPlayer(*me, casterGUID))
+            ScriptedAI::UpdateAI(uiDiff);
+
+            if (!me->HasAura(SPELL_COSMETIC_ENSLAVE_CHAINS_SELF))
+                DoCast(me, SPELL_COSMETIC_ENSLAVE_CHAINS_SELF);
+
+            if (me->GetReactState() != REACT_PASSIVE)
+                me->SetReactState(REACT_PASSIVE);
+
+            switch (uiPhase)
             {
-                uint32 step = caster->GetAuraCount(SPELL_NEURAL_NEEDLE) + 1;
-                switch (step)
-                {
-                    case 1:
+                case 1:
+                    if (uiStep == 1)
+                    {
                         DoScriptText(SAY_IMPRISIONED_BERYL_1, me);
-                        break;
-                    case 2:
-                        DoScriptText(SAY_IMPRISIONED_BERYL_2, me, caster);
-                        break;
-                    case 3:
+                        uiStep = 2;
+                    }
+                    break;
+
+                case 2:
+                    if (uiStep == 2)
+                    {
+                        DoScriptText(SAY_IMPRISIONED_BERYL_2, me);
+                        uiStep = 3;
+                    }
+                    break;
+
+                case 3:
+                    if (uiStep == 3)
+                    {
                         DoScriptText(SAY_IMPRISIONED_BERYL_3, me);
-                        break;
-                    case 4:
+                        uiStep = 4;
+                    }
+                    break;
+
+                case 4:
+                    if (uiStep == 4)
+                    {
                         DoScriptText(SAY_IMPRISIONED_BERYL_4, me);
-                        break;
-                    case 5:
-                        DoScriptText(SAY_IMPRISIONED_BERYL_5, me);
-                        break;
-                    case 6:
-                        DoScriptText(SAY_IMPRISIONED_BERYL_6, me, caster);
-                        break;
-                    case 7:
+                        uiStep = 5;
+                    }
+                    break;
+
+                case 5:
+                    if (uiStep == 5)
+                    {
+                        if (Player* pCaster = Unit::GetPlayer(*me, CasterGUID))
+                        {
+                            DoScriptText(SAY_IMPRISIONED_BERYL_5, me);
+                            pCaster->KilledMonsterCredit(25478, 0);
+                            uiStep = 6;
+                        }
+                    }
+                    break;
+
+                case 6:
+                    if (uiStep == 6)
+                    {
+                        DoScriptText(SAY_IMPRISIONED_BERYL_6, me);
+                        uiStep = 7;
+                    }
+                    break;
+
+                case 7:
+                    if (uiStep == 7)
+                    {
                         DoScriptText(SAY_IMPRISIONED_BERYL_7, me);
-                        caster->KilledMonsterCredit(NPC_IMPRISONED_BERYL_SORCERER, 0);
-                        break;
-                }
+                        uiStep  = 1;
+                        uiPhase = 0;
+                    }
+                    break;
             }
         }
     };

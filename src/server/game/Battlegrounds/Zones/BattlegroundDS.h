@@ -19,7 +19,7 @@
 #ifndef __BATTLEGROUNDDS_H
 #define __BATTLEGROUNDDS_H
 
-#include "Battleground.h"
+class Battleground;
 
 enum BattlegroundDSObjectTypes
 {
@@ -79,6 +79,14 @@ enum BattlegroundDSData
     BG_DS_WATERFALL_STATUS_OFF                   = 3
 };
 
+class BattlegroundDSScore : public BattlegroundScore
+{
+    public:
+        BattlegroundDSScore() {};
+        virtual ~BattlegroundDSScore() {};
+        //TODO fix me
+};
+
 class BattlegroundDS : public Battleground
 {
     public:
@@ -86,15 +94,15 @@ class BattlegroundDS : public Battleground
         ~BattlegroundDS();
 
         /* inherited from BattlegroundClass */
-        void AddPlayer(Player* player);
-        void StartingEventCloseDoors();
-        void StartingEventOpenDoors();
+        virtual void AddPlayer(Player* player);
+        virtual void StartingEventCloseDoors();
+        virtual void StartingEventOpenDoors();
 
         void RemovePlayer(Player* player, uint64 guid, uint32 team);
         void HandleAreaTrigger(Player* Source, uint32 Trigger);
         bool SetupBattleground();
-        void Reset();
-        void FillInitialWorldStates(WorldPacket &d);
+        virtual void Reset();
+        virtual void FillInitialWorldStates(WorldPacket &d);
         void HandleKillPlayer(Player* player, Player* killer);
         bool HandlePlayerUnderMap(Player* player);
     private:
@@ -104,7 +112,7 @@ class BattlegroundDS : public Battleground
         uint32 _pipeKnockBackTimer;
         uint8 _pipeKnockBackCount;
 
-        void PostUpdateImpl(uint32 diff);
+        virtual void PostUpdateImpl(uint32 diff);
     protected:
         uint32 getWaterFallStatus() { return _waterfallStatus; };
         void setWaterFallStatus(uint8 status) { _waterfallStatus = status; };

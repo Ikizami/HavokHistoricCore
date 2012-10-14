@@ -38,32 +38,32 @@ public:
     {
         static ChatCommand gobjectAddCommandTable[] =
         {
-            { "temp",           SEC_HGM,     false, &HandleGameObjectAddTempCommand,   "", NULL },
-            { "",               SEC_HGM,     false, &HandleGameObjectAddCommand,       "", NULL },
+            { "temp",           SEC_GAMEMASTER,     false, &HandleGameObjectAddTempCommand,   "", NULL },
+            { "",               SEC_GAMEMASTER,     false, &HandleGameObjectAddCommand,       "", NULL },
             { NULL,             0,                  false, NULL,                              "", NULL }
         };
         static ChatCommand gobjectSetCommandTable[] =
         {
-            { "phase",          SEC_HGM,     false, &HandleGameObjectSetPhaseCommand,  "", NULL },
-            { "state",          SEC_HGM,     false, &HandleGameObjectSetStateCommand,  "", NULL },
+            { "phase",          SEC_GAMEMASTER,     false, &HandleGameObjectSetPhaseCommand,  "", NULL },
+            { "state",          SEC_GAMEMASTER,     false, &HandleGameObjectSetStateCommand,  "", NULL },
             { NULL,             0,                  false, NULL,                              "", NULL }
         };
         static ChatCommand gobjectCommandTable[] =
         {
-            { "activate",       SEC_HGM,     false, &HandleGameObjectActivateCommand,  "", NULL },
-            { "delete",         SEC_HGM,     false, &HandleGameObjectDeleteCommand,    "", NULL },
-            { "info",           SEC_HGM,     false, &HandleGameObjectInfoCommand,      "", NULL },
-            { "move",           SEC_HGM,     false, &HandleGameObjectMoveCommand,      "", NULL },
-            { "near",           SEC_HGM,     false, &HandleGameObjectNearCommand,      "", NULL },
-            { "target",         SEC_HGM,     false, &HandleGameObjectTargetCommand,    "", NULL },
-            { "turn",           SEC_HGM,     false, &HandleGameObjectTurnCommand,      "", NULL },
-            { "add",            SEC_HGM,     false, NULL,            "", gobjectAddCommandTable },
-            { "set",            SEC_HGM,     false, NULL,            "", gobjectSetCommandTable },
+            { "activate",       SEC_GAMEMASTER,     false, &HandleGameObjectActivateCommand,  "", NULL },
+            { "delete",         SEC_GAMEMASTER,     false, &HandleGameObjectDeleteCommand,    "", NULL },
+            { "info",           SEC_GAMEMASTER,     false, &HandleGameObjectInfoCommand,      "", NULL },
+            { "move",           SEC_GAMEMASTER,     false, &HandleGameObjectMoveCommand,      "", NULL },
+            { "near",           SEC_GAMEMASTER,     false, &HandleGameObjectNearCommand,      "", NULL },
+            { "target",         SEC_GAMEMASTER,     false, &HandleGameObjectTargetCommand,    "", NULL },
+            { "turn",           SEC_GAMEMASTER,     false, &HandleGameObjectTurnCommand,      "", NULL },
+            { "add",            SEC_GAMEMASTER,     false, NULL,            "", gobjectAddCommandTable },
+            { "set",            SEC_GAMEMASTER,     false, NULL,            "", gobjectSetCommandTable },
             { NULL,             0,                  false, NULL,                              "", NULL }
         };
         static ChatCommand commandTable[] =
         {
-            { "gobject",        SEC_HGM,     false, NULL,                "", gobjectCommandTable },
+            { "gobject",        SEC_GAMEMASTER,     false, NULL,                "", gobjectCommandTable },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         return commandTable;
@@ -201,8 +201,8 @@ public:
         float z = player->GetPositionZ();
         float ang = player->GetOrientation();
 
-        float rot2 = std::sin(ang/2);
-        float rot3 = std::cos(ang/2);
+        float rot2 = sin(ang/2);
+        float rot3 = cos(ang/2);
 
         uint32 objectId = atoi(id);
 

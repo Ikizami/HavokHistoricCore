@@ -130,6 +130,14 @@
 
 #endif
 
+#define UI64FMTD ACE_UINT64_FORMAT_SPECIFIER
+#define UI64LIT(N) ACE_UINT64_LITERAL(N)
+
+#define SI64FMTD ACE_INT64_FORMAT_SPECIFIER
+#define SI64LIT(N) ACE_INT64_LITERAL(N)
+
+#define SIZEFMTD ACE_SIZE_T_FORMAT_SPECIFIER
+
 inline float finiteAlways(float f) { return finite(f) ? f : 0.0f; }
 
 #define atol(a) strtoul( a, NULL, 10)
@@ -150,12 +158,10 @@ enum TimeConstants
 enum AccountTypes
 {
     SEC_PLAYER         = 0,
-	SEC_VIP			   = 1,
-    SEC_GM		       = 2,
-    SEC_HGM		       = 3,
-    SEC_ADMINISTRATOR  = 4,
-    SEC_CONSOLE        = 5, 
-	SEC_OWNER		   = 6// must be always last in list, accounts must have less security level always also
+    SEC_MODERATOR      = 1,
+    SEC_GAMEMASTER     = 2,
+    SEC_ADMINISTRATOR  = 3,
+    SEC_CONSOLE        = 4                                  // must be always last in list, accounts must have less security level always also
 };
 
 enum LocaleConstant

@@ -899,34 +899,34 @@ public:
         return true;
     }
 
-    // kick player
-    static bool HandleKickPlayerCommand(ChatHandler* handler, char const* args)
-    {
-        Player* target = NULL;
-        std::string playerName;
-        if (!handler->extractPlayerTarget((char*)args, &target, NULL, &playerName))
-            return false;
-
-        if (handler->GetSession() && target == handler->GetSession()->GetPlayer())
+       // kick player
+        static bool HandleKickPlayerCommand(ChatHandler* handler, char const* args)
         {
-            handler->SendSysMessage(LANG_COMMAND_KICKSELF);
-            handler->SetSentErrorMessage(true);
-            return false;
+                Player* target = NULL;
+                std::string playerName;
+                if (!handler->extractPlayerTarget((char*)args, &target, NULL, &playerName))
+                        return false;
+                if (handler->GetSession() && target == handler->GetSession()->GetPlayer())
+                {
+                        handler->SendSysMessage(LANG_COMMAND_KICKSELF);
+                        handler->SetSentErrorMessage(true);
+                        return false;
+                }
+                // check online security
+                if (handler->HasLowerSecurity(target, 0))
+                        return false;
+           
+                char const* kickReason = strtok(NULL, "\r");
+                std::string kickReasonStr = "No reason";
+                if (kickReason != NULL)
+                        kickReasonStr = kickReason;
+                if (sWorld->getBoolConfig(CONFIG_SHOW_KICK_IN_WORLD))
+                        sWorld->SendWorldText(LANG_COMMAND_KICKMESSAGE, playerName.c_str(), kickReasonStr.c_str());
+                else
+                        handler->PSendSysMessage(LANG_COMMAND_KICKMESSAGE, playerName.c_str(), kickReasonStr.c_str());
+                target->GetSession()->KickPlayer();
+                return true;
         }
-
-        // check online security
-        if (handler->HasLowerSecurity(target, 0))
-            return false;
-
-        if (sWorld->getBoolConfig(CONFIG_SHOW_KICK_IN_WORLD))
-            sWorld->SendWorldText(LANG_COMMAND_KICKMESSAGE, playerName.c_str());
-        else
-            handler->PSendSysMessage(LANG_COMMAND_KICKMESSAGE, playerName.c_str());
-
-        target->GetSession()->KickPlayer();
-
-        return true;
-    }
 
     static bool HandleUnstuckCommand(ChatHandler* handler, char const* args)
     {

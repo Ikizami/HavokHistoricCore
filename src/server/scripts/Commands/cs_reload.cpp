@@ -38,6 +38,7 @@ EndScriptData */
 #include "Chat.h"
 #include "WaypointManager.h"
 #include "WardenCheckMgr.h"
+#include "CustomVendor.h"
 
 class reload_commandscript : public CommandScript
 {
@@ -158,6 +159,7 @@ public:
             { "waypoint_data",                SEC_ADMINISTRATOR, true,  &HandleReloadWpCommand,                         "", NULL },
             { "vehicle_accessory",            SEC_ADMINISTRATOR, true,  &HandleReloadVehicleAccessoryCommand,           "", NULL },
             { "vehicle_template_accessory",   SEC_ADMINISTRATOR, true,  &HandleReloadVehicleTemplateAccessoryCommand,   "", NULL },
+			{ "custom_vendor",   SEC_ADMINISTRATOR, true,  &HandleReloadCustomVendorCommand,   "", NULL },
             { NULL,                           0,                 false, NULL,                                           "", NULL }
         };
         static ChatCommand commandTable[] =
@@ -1296,6 +1298,14 @@ public:
         sLog->outInfo(LOG_FILTER_GENERAL, "Reloading vehicle_accessory table...");
         sObjectMgr->LoadVehicleAccessories();
         handler->SendGlobalGMSysMessage("Vehicle accessories reloaded.");
+        return true;
+    }
+
+	    static bool HandleReloadCustomVendorCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        sLog->outInfo(LOG_FILTER_GENERAL, "Reloading custom_vendor table...");
+        CustomVendorMgr.LoadVendors();
+        handler->SendGlobalGMSysMessage("custom_vendor table reloaded.");
         return true;
     }
 

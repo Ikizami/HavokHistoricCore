@@ -1088,6 +1088,7 @@ class Player : public Unit, public GridObject<Player>
     friend void Item::AddToUpdateQueueOf(Player* player);
     friend void Item::RemoveFromUpdateQueueOf(Player* player);
     public:
+		int currentVendorEntry;
         explicit Player (WorldSession* session);
         ~Player();
 

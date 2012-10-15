@@ -646,6 +646,7 @@ Player::Player(WorldSession* session): Unit(true), m_achievementMgr(this), m_rep
 
     m_speakTime = 0;
     m_speakCount = 0;
+	currentVendorEntry = -1;
 
     m_objectType |= TYPEMASK_PLAYER;
     m_objectTypeId = TYPEID_PLAYER;
@@ -21046,12 +21047,11 @@ bool Player::BuyItemFromVendorSlot(uint64 vendorguid, uint32 vendorslot, uint32 
         return false;
     }
 
-    VendorItemData const* vItems = creature->GetVendorItems();
-    if (!vItems || vItems->Empty())
-    {
-        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, item, 0);
-        return false;
-    }
+    VendorItemData const* vItems;
+   	if(currentVendorEntry != -1)
+   		vItems = sObjectMgr->GetNpcVendorItemList(currentVendorEntry); // creature->GetVendorItems();
+   	else
+   		vItems = creature->GetVendorItems();
 
     if (vendorslot >= vItems->GetItemCount())
     {

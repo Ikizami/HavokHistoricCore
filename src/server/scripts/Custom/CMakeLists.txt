@@ -12,6 +12,8 @@ set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
     Custom/Transmogrification.cpp
     Custom/Transmogrification.h
+	Custom/vendor_multi.cpp
+	Custom/vendor_general.cpp
 )
 
 message("  -> Prepared: Custom")

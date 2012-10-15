@@ -26,6 +26,7 @@
 #include "ScriptSystem.h"
 #include "Transport.h"
 #include "Vehicle.h"
+#include "CustomVendor.h"
 #include "SpellInfo.h"
 #include "SpellScript.h"
 #include "GossipDef.h"
@@ -257,6 +258,11 @@ void ScriptMgr::Initialize()
     AddScripts();
 
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %u C++ scripts in %u ms", GetScriptCount(), GetMSTimeDiffToNow(oldMSTime));
+
+	oldMSTime = getMSTime();
+	sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading custom vendors");
+	sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %u custom vendor catageory entries in %u ms", CustomVendorMgr.LoadVendors(), GetMSTimeDiffToNow(oldMSTime));
+
 }
 
 void ScriptMgr::Unload()

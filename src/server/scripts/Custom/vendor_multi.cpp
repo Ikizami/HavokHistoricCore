@@ -31,13 +31,13 @@ class vendor_multi : public CreatureScript
 
                 int icon = GOSSIP_ICON_CHAT;
                 if(CustomVendorMgr.GetNext(creature->GetCreatureTemplate()->Entry, vendorEntry->next) < 0)
-                    icon = GOSSIP_ICON_MONEY_BAG;
+                    icon = GOSSIP_ICON_CHAT;
 
                 player->ADD_GOSSIP_ITEM(icon, vendorEntry->desc, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2+vendorEntry->next);
                 x++;
                 if(x == 5)
                 {
-                    player->PlayerTalkClass->SendGossipMenu(907, creature->GetGUID());
+                    player->PlayerTalkClass->SendGossipMenu(70000, creature->GetGUID());
                     x = 0;
                 }
             }

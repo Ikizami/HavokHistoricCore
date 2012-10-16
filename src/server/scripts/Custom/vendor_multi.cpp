@@ -37,7 +37,7 @@ class vendor_multi : public CreatureScript
                 x++;
                 if(x == 5)
                 {
-                    player->PlayerTalkClass->SendGossipMenu(70000, creature->GetGUID());
+				player->SEND_GOSSIP_MENU(70001, creature->GetGUID());
                     x = 0;
                 }
             }

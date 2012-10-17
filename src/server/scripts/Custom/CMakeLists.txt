@@ -15,7 +15,7 @@ set(scripts_STAT_SRCS
 	Custom/vendor_multi.cpp
 	Custom/vendor_general.cpp
 	Custom/vendor_donation.cpp
-	Custom/proff.cpp
+	Custom/Proff.cpp
 )
 
 message("  -> Prepared: Custom")

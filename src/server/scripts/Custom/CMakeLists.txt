@@ -14,6 +14,7 @@ set(scripts_STAT_SRCS
     Custom/Transmogrification.h
 	Custom/vendor_multi.cpp
 	Custom/vendor_general.cpp
+	Custom/vendor_donation.cpp
 )
 
 message("  -> Prepared: Custom")

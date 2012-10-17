@@ -1261,6 +1261,7 @@ void AddBattlegroundScripts()
 
 	void AddSC_NPC_Transmogrify();
 	void AddSC_vendor_multi();
+	void AddSC_vendor_donation();
 	void AddSC_vendor_general();
 #endif
 
@@ -1271,6 +1272,7 @@ void AddCustomScripts()
 
     AddSC_NPC_Transmogrify();
 	AddSC_vendor_multi();
+	AddSC_vendor_donation();
 	AddSC_vendor_general();
 #endif
 }

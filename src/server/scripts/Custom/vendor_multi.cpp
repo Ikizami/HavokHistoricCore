@@ -45,14 +45,14 @@ class vendor_multi : public CreatureScript
 			if(current)
             {
                 if(current->group != 0)
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "<< Zpet", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2+current->id);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|cffff0000[ Return of Main Menu]", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2+current->id);
                 else
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "<< Zpet", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|cffff0000[ Return of Main Menu]", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
                 x++;
             }
 
             if(x != 0)
-                player->PlayerTalkClass->SendGossipMenu(907, creature->GetGUID());
+                player->PlayerTalkClass->SendGossipMenu(70002, creature->GetGUID());
         }
 
         bool OnGossipHello(Player* player, Creature* creature)

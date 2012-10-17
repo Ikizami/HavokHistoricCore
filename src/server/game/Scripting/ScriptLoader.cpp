@@ -1263,6 +1263,7 @@ void AddBattlegroundScripts()
 	void AddSC_vendor_multi();
 	void AddSC_vendor_donation();
 	void AddSC_vendor_general();
+	void AddSC_Professions_NPC();
 #endif
 
 void AddCustomScripts()
@@ -1274,5 +1275,6 @@ void AddCustomScripts()
 	AddSC_vendor_multi();
 	AddSC_vendor_donation();
 	AddSC_vendor_general();
+	AddSC_Professions_NPC();
 #endif
 }

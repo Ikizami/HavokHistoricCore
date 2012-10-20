@@ -18,6 +18,8 @@ set(scripts_STAT_SRCS
 	Custom/Proff.cpp
 	Custom/enchant.cpp
 	Custom/worldchat.cpp
+	Custom/bountyhunter.cpp
+	Custom/toparena.cpp
 )
 
 message("  -> Prepared: Custom")

@@ -1268,6 +1268,8 @@ void AddBattlegroundScripts()
 	void AddSC_Professions_NPC();
 	void AddSC_npc_enchantment();
 	void AddSC_cs_world_chat();
+	void AddSC_npc_arena_setup();
+	void AddSC_bounties_hunters();
 
 #endif
 
@@ -1283,6 +1285,8 @@ void AddCustomScripts()
 	AddSC_Professions_NPC();
 	AddSC_npc_enchantment();
 	AddSC_cs_world_chat();
+	AddSC_npc_arena_setup();
+	AddSC_bounties_hunters();
 
 #endif
 }

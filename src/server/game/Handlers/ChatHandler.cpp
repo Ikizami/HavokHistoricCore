@@ -110,6 +110,12 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
             return;
         }
     }
+   
+    if (_player->IsSpectator())
+    {
+        SendNotification(LANG_SPEC_CAN_NOT_CHAT);
+        return;
+    }
 
     if (lang == LANG_ADDON)
     {

@@ -1109,6 +1109,12 @@ enum TrinityStrings
     LANG_OPTION_REMOVE_ONE              = 11126,
     LANG_POPUP_REMOVE_ONE               = 11127,
     LANG_POPUP_TRANSMOGRIFY             = 11128,
+	LANG_SPEC_FORBID                    = 11610,
+    LANG_SPEC_NOT_ON_ARENA              = 11611,
+    LANG_SPEC_ON_ARENA_OR_BG            = 11612,
+    LANG_SPEC_ALREADY_SPECTATOR         = 11613,
+    LANG_SPEC_DISABLED                  = 11614,
+    LANG_SPEC_CAN_NOT_CHAT              = 11615,
 
     LANG_ERR_NO_TOKEN                   = 11129
 

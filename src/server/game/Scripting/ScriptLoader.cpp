@@ -75,6 +75,7 @@ void AddSC_tele_commandscript();
 void AddSC_ticket_commandscript();
 void AddSC_titles_commandscript();
 void AddSC_wp_commandscript();
+void AddSC_spectate_commandscript();
 
 #ifdef SCRIPTS
 //world
@@ -693,6 +694,7 @@ void AddCommandScripts()
     AddSC_ticket_commandscript();
     AddSC_titles_commandscript();
     AddSC_wp_commandscript();
+	AddSC_spectate_commandscript();
 }
 
 void AddWorldScripts()
@@ -1264,6 +1266,9 @@ void AddBattlegroundScripts()
 	void AddSC_vendor_donation();
 	void AddSC_vendor_general();
 	void AddSC_Professions_NPC();
+	void AddSC_npc_enchantment();
+	void AddSC_cs_world_chat();
+
 #endif
 
 void AddCustomScripts()
@@ -1276,5 +1281,8 @@ void AddCustomScripts()
 	AddSC_vendor_donation();
 	AddSC_vendor_general();
 	AddSC_Professions_NPC();
+	AddSC_npc_enchantment();
+	AddSC_cs_world_chat();
+
 #endif
 }

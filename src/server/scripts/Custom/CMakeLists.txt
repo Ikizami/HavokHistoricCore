@@ -16,6 +16,8 @@ set(scripts_STAT_SRCS
 	Custom/vendor_general.cpp
 	Custom/vendor_donation.cpp
 	Custom/Proff.cpp
+	Custom/enchant.cpp
+	Custom/worldchat.cpp
 )
 
 message("  -> Prepared: Custom")

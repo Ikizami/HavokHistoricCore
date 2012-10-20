@@ -45,7 +45,7 @@ public:
         };
         static ChatCommand lookupCommandTable[] =
         {
-            { "area",           SEC_MODERATOR,      true,  &HandleLookupAreaCommand,            "", NULL },
+            { "area",           SEC_GAMEMASTER,      true,  &HandleLookupAreaCommand,            "", NULL },
             { "creature",       SEC_ADMINISTRATOR,  true,  &HandleLookupCreatureCommand,        "", NULL },
             { "event",          SEC_GAMEMASTER,     true,  &HandleLookupEventCommand,           "", NULL },
             { "faction",        SEC_ADMINISTRATOR,  true,  &HandleLookupFactionCommand,         "", NULL },
@@ -57,7 +57,7 @@ public:
             { "skill",          SEC_ADMINISTRATOR,  true,  &HandleLookupSkillCommand,           "", NULL },
             { "spell",          SEC_ADMINISTRATOR,  true,  &HandleLookupSpellCommand,           "", NULL },
             { "taxinode",       SEC_ADMINISTRATOR,  true,  &HandleLookupTaxiNodeCommand,        "", NULL },
-            { "tele",           SEC_MODERATOR,      true,  &HandleLookupTeleCommand,            "", NULL },
+            { "tele",           SEC_GAMEMASTER,      true,  &HandleLookupTeleCommand,            "", NULL },
             { "title",          SEC_GAMEMASTER,     true,  &HandleLookupTitleCommand,           "", NULL },
             { "map",            SEC_ADMINISTRATOR,  true,  &HandleLookupMapCommand,             "", NULL },
             { NULL,             0,                  false, NULL,                                "", NULL }

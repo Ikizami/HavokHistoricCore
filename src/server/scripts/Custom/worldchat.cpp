@@ -89,21 +89,57 @@ class cs_world_chat : public CommandScript
 					msg += " |cfffaeb00";
 				}
 				break;
-			// Moderator/trial 
-			case SEC_MODERATOR:
-				msg += "|cffff8a00[Mod] ";
+			// VIP
+			case SEC_VIP:
+				msg += "|cffff8a00[VIP] ";
 				msg += GetNameLink(player);
 				msg += " |cfffaeb00";
 				break;
-			// GM
+			// Event Master
+			case SEC_EVENTMASTER:
+				msg += "|cff00ffff[Event Master] ";
+				msg += GetNameLink(player);
+				msg += " |cfffaeb00";
+				break;
+			// Head Event Master
+			case SEC_HEVENTMASTER:
+				msg += "|cff00ffff[Event Master] ";
+				msg += GetNameLink(player);
+				msg += " |cfffaeb00";
+				break;
+			// Game Master
 			case SEC_GAMEMASTER:
 				msg += "|cff00ffff[GM] ";
+				msg += GetNameLink(player);
+				msg += " |cfffaeb00";
+				break;
+			// Head Game Master
+			case SEC_HGAMEASTER:
+				msg += "|cff00ffff[HGM] ";
+				msg += GetNameLink(player);
+				msg += " |cfffaeb00";
+				break;
+			// Developer
+			case SEC_DEVELOPER:
+				msg += "|cff00ffff[Dev] ";
 				msg += GetNameLink(player);
 				msg += " |cfffaeb00";
 				break;
 			// Admin
 			case SEC_ADMINISTRATOR:
 				msg += "|cfffa9900[Admin] ";
+				msg += GetNameLink(player);
+				msg += " |cfffaeb00";
+				break;
+			// Admin
+			case SEC_OWNER:
+				msg += "|cfffa9900[Owner] ";
+				msg += GetNameLink(player);
+				msg += " |cfffaeb00";
+				break;
+			// Admin
+			case SEC_CONSOLE:
+				msg += "|cfffa9900[Console] ";
 				msg += GetNameLink(player);
 				msg += " |cfffaeb00";
 				break;

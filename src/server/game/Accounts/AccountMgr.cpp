@@ -285,9 +285,19 @@ bool IsPlayerAccount(uint32 gmlevel)
     return gmlevel == SEC_PLAYER;
 }
 
-bool IsModeratorAccount(uint32 gmlevel)
+bool IsVIPAccount(uint32 gmlevel)
 {
-    return gmlevel >= SEC_MODERATOR && gmlevel <= SEC_CONSOLE;
+    return gmlevel >= SEC_VIP && gmlevel <= SEC_CONSOLE;
+}
+
+bool IsEMasterAccount(uint32 gmlevel)
+{
+    return gmlevel >= SEC_EVENTMASTER && gmlevel <= SEC_CONSOLE;
+}
+
+bool IsHEMasterAccount(uint32 gmlevel)
+{
+    return gmlevel >= SEC_HEVENTMASTER && gmlevel <= SEC_CONSOLE;
 }
 
 bool IsGMAccount(uint32 gmlevel)
@@ -295,9 +305,24 @@ bool IsGMAccount(uint32 gmlevel)
     return gmlevel >= SEC_GAMEMASTER && gmlevel <= SEC_CONSOLE;
 }
 
+bool IsHGMAccount(uint32 gmlevel)
+{
+    return gmlevel >= SEC_HGAMEASTER && gmlevel <= SEC_CONSOLE;
+}
+
+bool IsDevAccount(uint32 gmlevel)
+{
+    return gmlevel >= SEC_DEVELOPER && gmlevel <= SEC_CONSOLE;
+}
+
 bool IsAdminAccount(uint32 gmlevel)
 {
     return gmlevel >= SEC_ADMINISTRATOR && gmlevel <= SEC_CONSOLE;
+}
+
+bool IsOwnerAccount(uint32 gmlevel)
+{
+    return gmlevel >= SEC_OWNER && gmlevel <= SEC_CONSOLE;
 }
 
 bool IsConsoleAccount(uint32 gmlevel)

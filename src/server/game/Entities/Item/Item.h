@@ -231,6 +231,15 @@ class Item : public Object
         static void DeleteFromDB(SQLTransaction& trans, uint32 itemGuid);
         virtual void DeleteFromDB(SQLTransaction& trans);
         static void DeleteFromInventoryDB(SQLTransaction& trans, uint32 itemGuid);
+
+        // Lootable items and their contents
+        void ItemContainerSaveLootToDB();
+        bool ItemContainerLoadLootFromDB();
+        void ItemContainerDeleteLootItemsFromDB();
+        void ItemContainerDeleteLootItemFromDB(uint32 itemID);
+        void ItemContainerDeleteLootMoneyFromDB();
+        void ItemContainerDeleteLootMoneyAndLootItemsFromDB();
+
         void DeleteFromInventoryDB(SQLTransaction& trans);
         void SaveRefundDataToDB();
         void DeleteRefundDataFromDB(SQLTransaction* trans);
@@ -339,12 +348,6 @@ class Item : public Object
         bool CheckSoulboundTradeExpire();
 
         void BuildUpdate(UpdateDataMapType&);
-
-        // custom
-        uint32 GetFakeEntry();
-        bool DeleteFakeEntry();
-        static void DeleteFakeFromDB(uint32 lowGUID);
-        void SetFakeEntry(uint32 entry);
 
         uint32 GetScriptId() const { return GetTemplate()->ScriptId; }
     private:

@@ -22,11 +22,13 @@ Comment: All tele related commands
 Category: commandscripts
 EndScriptData */
 
-#include "ScriptMgr.h"
-#include "ObjectMgr.h"
-#include "MapManager.h"
 #include "Chat.h"
 #include "Group.h"
+#include "Language.h"
+#include "MapManager.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "ScriptMgr.h"
 
 class tele_commandscript : public CommandScript
 {
@@ -39,14 +41,14 @@ public:
         {
             { "add",            SEC_ADMINISTRATOR,  false, &HandleTeleAddCommand,             "", NULL },
             { "del",            SEC_ADMINISTRATOR,  true,  &HandleTeleDelCommand,             "", NULL },
-            { "name",           SEC_GAMEMASTER,      true,  &HandleTeleNameCommand,            "", NULL },
-            { "group",          SEC_GAMEMASTER,      false, &HandleTeleGroupCommand,           "", NULL },
-            { "",               SEC_GAMEMASTER,      false, &HandleTeleCommand,                "", NULL },
+            { "name",           SEC_MODERATOR,      true,  &HandleTeleNameCommand,            "", NULL },
+            { "group",          SEC_MODERATOR,      false, &HandleTeleGroupCommand,           "", NULL },
+            { "",               SEC_MODERATOR,      false, &HandleTeleCommand,                "", NULL },
             { NULL,             0,                  false, NULL,                              "", NULL }
         };
         static ChatCommand commandTable[] =
         {
-            { "tele",           SEC_GAMEMASTER,      false, NULL,                   "", teleCommandTable },
+            { "tele",           SEC_MODERATOR,      false, NULL,                   "", teleCommandTable },
             { NULL,             0,                  false, NULL,                               "", NULL }
         };
         return commandTable;
@@ -178,7 +180,7 @@ public:
 
             handler->PSendSysMessage(LANG_TELEPORTING_TO, chrNameLink.c_str(), "", tele->name.c_str());
             if (handler->needReportToTarget(target))
-                (ChatHandler(target)).PSendSysMessage(LANG_TELEPORTED_TO_BY, handler->GetNameLink().c_str());
+                ChatHandler(target->GetSession()).PSendSysMessage(LANG_TELEPORTED_TO_BY, handler->GetNameLink().c_str());
 
             // stop flight if need
             if (target->isInFlight())
@@ -274,7 +276,7 @@ public:
 
             handler->PSendSysMessage(LANG_TELEPORTING_TO, plNameLink.c_str(), "", tele->name.c_str());
             if (handler->needReportToTarget(player))
-                (ChatHandler(player)).PSendSysMessage(LANG_TELEPORTED_TO_BY, nameLink.c_str());
+                ChatHandler(player->GetSession()).PSendSysMessage(LANG_TELEPORTED_TO_BY, nameLink.c_str());
 
             // stop flight if need
             if (player->isInFlight())

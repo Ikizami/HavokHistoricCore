@@ -8,10 +8,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-if( USE_COREPCH )
-  include_directories(${CMAKE_CURRENT_BINARY_DIR})
-endif()
-
 file(GLOB_RECURSE sources_Accounts Accounts/*.cpp Accounts/*.h)
 file(GLOB_RECURSE sources_Achievements Achievements/*.cpp Achievements/*.h)
 file(GLOB_RECURSE sources_Addons Addons/*.cpp Addons/*.h)
@@ -38,7 +34,6 @@ file(GLOB_RECURSE sources_Mails Mails/*.cpp Mails/*.h)
 file(GLOB_RECURSE sources_Maps Maps/*.cpp Maps/*.h)
 file(GLOB_RECURSE sources_Miscellaneous Miscellaneous/*.cpp Miscellaneous/*.h)
 file(GLOB_RECURSE sources_Movement Movement/*.cpp Movement/*.h)
-file(GLOB_RECURSE sources_MultiVendor MultiVendor/*.cpp MultiVendor/*.h)
 file(GLOB_RECURSE sources_OutdoorPvP OutdoorPvP/*.cpp OutdoorPvP/*.h)
 file(GLOB_RECURSE sources_Pools Pools/*.cpp Pools/*.h)
 file(GLOB_RECURSE sources_Quests Quests/*.cpp Quests/*.h)
@@ -56,12 +51,10 @@ file(GLOB_RECURSE sources_World World/*.cpp World/*.h)
 
 # Create game-libary
 
-if( USE_COREPCH AND MSVC )
-  set(game_STAT_SRCS
-    PrecompiledHeaders/gamePCH.cpp
-    PrecompiledHeaders/gamePCH.h
-  )
-endif()
+if (USE_COREPCH)
+  set(game_STAT_PCH_HDR PrecompiledHeaders/gamePCH.h)
+  set(game_STAT_PCH_SRC PrecompiledHeaders/gamePCH.cpp)
+endif ()
 
 set(game_STAT_SRCS
   ${game_STAT_SRCS}
@@ -91,7 +84,6 @@ set(game_STAT_SRCS
   ${sources_Maps}
   ${sources_Miscellaneous}
   ${sources_Movement}
-  ${sources_MultiVendor}
   ${sources_OutdoorPvP}
   ${sources_Pools}
   ${sources_Quests}
@@ -130,7 +122,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/server/shared/Packets
   ${CMAKE_SOURCE_DIR}/src/server/shared/Threading
   ${CMAKE_SOURCE_DIR}/src/server/shared/Utilities
-  ${CMAKE_SOURCE_DIR}/src/server/game/MultiVendor
+  ${CMAKE_SOURCE_DIR}/src/server/scripts/Custom
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/Accounts
   ${CMAKE_CURRENT_SOURCE_DIR}/Achievements
@@ -208,15 +200,14 @@ include_directories(
   ${OPENSSL_INCLUDE_DIR}
 )
 
-add_library(game STATIC ${game_STAT_SRCS})
+add_library(game STATIC
+  ${game_STAT_SRCS}
+  ${game_STAT_PCH_SRC}
+)
 
 add_dependencies(game revision.h)
 
 # Generate precompiled header
-if( USE_COREPCH )
-  if(CMAKE_COMPILER_IS_GNUCXX)
-    add_precompiled_header(game ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/gamePCH.h)
-  elseif(MSVC)
-    add_native_precompiled_header(game ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/gamePCH)
-  endif()
-endif()
+if (USE_COREPCH)
+  add_cxx_pch(game ${game_STAT_PCH_HDR} ${game_STAT_PCH_SRC})
+endif ()

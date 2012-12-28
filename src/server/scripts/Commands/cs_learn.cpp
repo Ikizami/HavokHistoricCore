@@ -25,8 +25,11 @@ EndScriptData */
 #include "Chat.h"
 #include "ScriptMgr.h"
 #include "ObjectMgr.h"
+#include "Language.h"
 #include "SpellMgr.h"
 #include "SpellInfo.h"
+#include "Player.h"
+#include "Pet.h"
 
 class learn_commandscript : public CommandScript
 {
@@ -49,8 +52,8 @@ public:
             { "my",             SEC_ADMINISTRATOR,  false, NULL,                                "",  learnAllMyCommandTable },
             { "gm",             SEC_GAMEMASTER,     false, &HandleLearnAllGMCommand,            "", NULL },
             { "crafts",         SEC_GAMEMASTER,     false, &HandleLearnAllCraftsCommand,        "", NULL },
-            { "default",        SEC_GAMEMASTER,      false, &HandleLearnAllDefaultCommand,       "", NULL },
-            { "lang",           SEC_GAMEMASTER,      false, &HandleLearnAllLangCommand,          "", NULL },
+            { "default",        SEC_MODERATOR,      false, &HandleLearnAllDefaultCommand,       "", NULL },
+            { "lang",           SEC_MODERATOR,      false, &HandleLearnAllLangCommand,          "", NULL },
             { "recipes",        SEC_GAMEMASTER,     false, &HandleLearnAllRecipesCommand,       "", NULL },
             { NULL,             0,                  false, NULL,                                "", NULL }
         };
@@ -64,7 +67,7 @@ public:
 
         static ChatCommand commandTable[] =
         {
-            { "learn",          SEC_GAMEMASTER,      false, NULL,                                "", learnCommandTable },
+            { "learn",          SEC_MODERATOR,      false, NULL,                                "", learnCommandTable },
             { "unlearn",        SEC_ADMINISTRATOR,  false, &HandleUnLearnCommand,               "", NULL },
             { NULL,             0,                  false, NULL,                                "", NULL }
         };

@@ -22,11 +22,13 @@ Comment: All server related commands
 Category: commandscripts
 EndScriptData */
 
-#include "ScriptMgr.h"
 #include "Chat.h"
-#include "SystemConfig.h"
 #include "Config.h"
+#include "Language.h"
 #include "ObjectAccessor.h"
+#include "Player.h"
+#include "ScriptMgr.h"
+#include "SystemConfig.h"
 
 class server_commandscript : public CommandScript
 {
@@ -144,7 +146,7 @@ public:
             if (strncmp(paramStr, "player", limit) == 0)
                 sWorld->SetPlayerSecurityLimit(SEC_PLAYER);
             else if (strncmp(paramStr, "moderator", limit) == 0)
-                sWorld->SetPlayerSecurityLimit(SEC_GAMEMASTER);
+                sWorld->SetPlayerSecurityLimit(SEC_MODERATOR);
             else if (strncmp(paramStr, "gamemaster", limit) == 0)
                 sWorld->SetPlayerSecurityLimit(SEC_GAMEMASTER);
             else if (strncmp(paramStr, "administrator", limit) == 0)
@@ -172,29 +174,14 @@ public:
             case SEC_PLAYER:
                 secName = "Player";
                 break;
-            case SEC_VIP:
-                secName = "VIP";
-                break;
-            case SEC_EVENTMASTER:
-                secName = "Event Master";
-                break;
-            case SEC_HEVENTMASTER:
-                secName = "Head Event Master";
+            case SEC_MODERATOR:
+                secName = "Moderator";
                 break;
             case SEC_GAMEMASTER:
                 secName = "Gamemaster";
                 break;
-            case SEC_HGAMEASTER:
-                secName = "Head Gamemaster";
-                break;
-            case SEC_DEVELOPER:
-                secName = "Developer";
-                break;
             case SEC_ADMINISTRATOR:
                 secName = "Administrator";
-                break;
-            case SEC_OWNER:
-                secName = "Owner";
                 break;
             default:
                 secName = "<unknown>";

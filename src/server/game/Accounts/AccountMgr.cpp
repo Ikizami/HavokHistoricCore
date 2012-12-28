@@ -16,12 +16,13 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DatabaseEnv.h"
 #include "AccountMgr.h"
+#include "DatabaseEnv.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
 #include "Util.h"
 #include "SHA1.h"
+#include "WorldSession.h"
 
 namespace AccountMgr
 {
@@ -176,7 +177,7 @@ AccountOpResult ChangePassword(uint32 accountId, std::string newPassword)
     return AOR_OK;
 }
 
-uint32 GetId(std::string username)
+uint32 GetId(std::string const& username)
 {
     PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_GET_ACCOUNT_ID_BY_USERNAME);
     stmt->setString(0, username);
@@ -265,7 +266,7 @@ bool normalizeString(std::string& utf8String)
     return WStrToUtf8(buffer, maxLength, utf8String);
 }
 
-std::string CalculateShaPassHash(std::string& name, std::string& password)
+std::string CalculateShaPassHash(std::string const& name, std::string const& password)
 {
     SHA1Hash sha;
     sha.Initialize();
@@ -274,10 +275,7 @@ std::string CalculateShaPassHash(std::string& name, std::string& password)
     sha.UpdateData(password);
     sha.Finalize();
 
-    std::string encoded;
-    hexEncodeByteArray(sha.GetDigest(), sha.GetLength(), encoded);
-
-    return encoded;
+    return ByteArrayToHexStr(sha.GetDigest(), sha.GetLength());
 }
 
 bool IsPlayerAccount(uint32 gmlevel)
@@ -285,19 +283,9 @@ bool IsPlayerAccount(uint32 gmlevel)
     return gmlevel == SEC_PLAYER;
 }
 
-bool IsVIPAccount(uint32 gmlevel)
+bool IsModeratorAccount(uint32 gmlevel)
 {
-    return gmlevel >= SEC_VIP && gmlevel <= SEC_CONSOLE;
-}
-
-bool IsEMasterAccount(uint32 gmlevel)
-{
-    return gmlevel >= SEC_EVENTMASTER && gmlevel <= SEC_CONSOLE;
-}
-
-bool IsHEMasterAccount(uint32 gmlevel)
-{
-    return gmlevel >= SEC_HEVENTMASTER && gmlevel <= SEC_CONSOLE;
+    return gmlevel >= SEC_MODERATOR && gmlevel <= SEC_CONSOLE;
 }
 
 bool IsGMAccount(uint32 gmlevel)
@@ -305,24 +293,9 @@ bool IsGMAccount(uint32 gmlevel)
     return gmlevel >= SEC_GAMEMASTER && gmlevel <= SEC_CONSOLE;
 }
 
-bool IsHGMAccount(uint32 gmlevel)
-{
-    return gmlevel >= SEC_HGAMEASTER && gmlevel <= SEC_CONSOLE;
-}
-
-bool IsDevAccount(uint32 gmlevel)
-{
-    return gmlevel >= SEC_DEVELOPER && gmlevel <= SEC_CONSOLE;
-}
-
 bool IsAdminAccount(uint32 gmlevel)
 {
     return gmlevel >= SEC_ADMINISTRATOR && gmlevel <= SEC_CONSOLE;
-}
-
-bool IsOwnerAccount(uint32 gmlevel)
-{
-    return gmlevel >= SEC_OWNER && gmlevel <= SEC_CONSOLE;
 }
 
 bool IsConsoleAccount(uint32 gmlevel)

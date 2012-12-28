@@ -17,20 +17,22 @@
  */
 
 #include "Common.h"
-#include "WorldPacket.h"
 #include "Log.h"
 #include "Corpse.h"
+#include "Creature.h"
 #include "GameObject.h"
-#include "Player.h"
-#include "ObjectAccessor.h"
-#include "WorldSession.h"
-#include "LootMgr.h"
-#include "Object.h"
 #include "Group.h"
+#include "LootMgr.h"
+#include "ObjectAccessor.h"
+#include "Object.h"
+#include "Opcodes.h"
+#include "Player.h"
 #include "World.h"
-#include "Util.h"
+#include "WorldPacket.h"
+#include "WorldSession.h"
+#include "TransmogEngine.h"
 
-void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
+void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket& recvData)
 {
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: CMSG_AUTOSTORE_LOOT_ITEM");
     Player* player = GetPlayer();
@@ -38,7 +40,15 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
     Loot* loot = NULL;
     uint8 lootSlot = 0;
 
-    recv_data >> lootSlot;
+    recvData >> lootSlot;
+
+	if(TransmogEngine::IsActiveInterface(lguid) && player)
+	{
+		if(Creature* creature= player->GetMap()->GetCreature(lguid))
+			TransmogEngine::HandleInterfaceSelect(player, creature, player->selectedInterface, lootSlot);
+
+		return;
+	}
 
     if (IS_GAMEOBJECT_GUID(lguid))
     {
@@ -92,9 +102,13 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
     }
 
     player->StoreLootItem(lootSlot, loot);
+
+    // If player is removing the last LootItem, delete the empty container.
+    if (loot->isLooted() && IS_ITEM_GUID(lguid))
+        player->GetSession()->DoLootRelease(lguid);
 }
 
-void WorldSession::HandleLootMoneyOpcode(WorldPacket & /*recv_data*/)
+void WorldSession::HandleLootMoneyOpcode(WorldPacket & /*recvData*/)
 {
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: CMSG_LOOT_MONEY");
 
@@ -179,7 +193,7 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & /*recv_data*/)
             for (std::vector<Player*>::const_iterator i = playersNear.begin(); i != playersNear.end(); ++i)
             {
                 (*i)->ModifyMoney(goldPerPlayer);
-                (*i)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, goldPerPlayer);
+                (*i)->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, goldPerPlayer);
 
                 WorldPacket data(SMSG_LOOT_MONEY_NOTIFY, 4 + 1);
                 data << uint32(goldPerPlayer);
@@ -190,7 +204,7 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & /*recv_data*/)
         else
         {
             player->ModifyMoney(loot->gold);
-            player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, loot->gold);
+            player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, loot->gold);
 
             WorldPacket data(SMSG_LOOT_MONEY_NOTIFY, 4 + 1);
             data << uint32(loot->gold);
@@ -199,15 +213,23 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & /*recv_data*/)
         }
 
         loot->gold = 0;
+
+        // Delete the money loot record from the DB
+        if (loot->containerID > 0)
+            loot->DeleteLootMoneyFromContainerItemDB();
+
+        // Delete container if empty
+        if (loot->isLooted() && IS_ITEM_GUID(guid))
+            player->GetSession()->DoLootRelease(guid);
     }
 }
 
-void WorldSession::HandleLootOpcode(WorldPacket & recv_data)
+void WorldSession::HandleLootOpcode(WorldPacket& recvData)
 {
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: CMSG_LOOT");
 
     uint64 guid;
-    recv_data >> guid;
+    recvData >> guid;
 
     // Check possible cheat
     if (!_player->isAlive())
@@ -228,6 +250,15 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket& recvData)
     // use internal stored guid
     uint64 guid;
     recvData >> guid;
+
+	if(Player* player=GetPlayer())
+		if(TransmogEngine::IsActiveInterface(guid))
+		{
+			if(Creature* crature = GetPlayer()->GetMap()->GetCreature(guid))
+				TransmogEngine::SendInterfaceClose(player, guid);
+
+			return;
+		}
 
     if (uint64 lguid = GetPlayer()->GetLootGUID())
         if (lguid == guid)
@@ -380,8 +411,10 @@ void WorldSession::DoLootRelease(uint64 lguid)
             player->DestroyItemCount(pItem, count, true);
         }
         else
-            // FIXME: item must not be deleted in case not fully looted state. But this pre-request implement loot saving in DB at item save. Or cheating possible.
-            player->DestroyItem(pItem->GetBagSlot(), pItem->GetSlot(), true);
+        {
+            if (pItem->loot.isLooted()) // Only delete item if no loot or money (unlooted loot is saved to db)
+                player->DestroyItem(pItem->GetBagSlot(), pItem->GetSlot(), true);
+        }
         return;                                             // item can be looted only single player
     }
     else
@@ -428,12 +461,12 @@ void WorldSession::DoLootRelease(uint64 lguid)
     loot->RemoveLooter(player->GetGUID());
 }
 
-void WorldSession::HandleLootMasterGiveOpcode(WorldPacket & recv_data)
+void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recvData)
 {
     uint8 slotid;
     uint64 lootguid, target_playerguid;
 
-    recv_data >> lootguid >> slotid >> target_playerguid;
+    recvData >> lootguid >> slotid >> target_playerguid;
 
     if (!_player->GetGroup() || _player->GetGroup()->GetLooterGuid() != _player->GetGUID())
     {
@@ -445,7 +478,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket & recv_data)
     if (!target)
         return;
 
-    sLog->outDebug(LOG_FILTER_NETWORKIO, "WorldSession::HandleLootMasterGiveOpcode (CMSG_LOOT_MASTER_GIVE, 0x02A3) Target = [%s].", target->GetName());
+    sLog->outDebug(LOG_FILTER_NETWORKIO, "WorldSession::HandleLootMasterGiveOpcode (CMSG_LOOT_MASTER_GIVE, 0x02A3) Target = [%s].", target->GetName().c_str());
 
     if (_player->GetLootGUID() != lootguid)
         return;
@@ -474,7 +507,8 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket & recv_data)
 
     if (slotid >= loot->items.size() + loot->quest_items.size())
     {
-        sLog->outDebug(LOG_FILTER_LOOT, "MasterLootItem: Player %s might be using a hack! (slot %d, size %lu)", GetPlayer()->GetName(), slotid, (unsigned long)loot->items.size());
+        sLog->outDebug(LOG_FILTER_LOOT, "MasterLootItem: Player %s might be using a hack! (slot %d, size %lu)",
+            GetPlayer()->GetName().c_str(), slotid, (unsigned long)loot->items.size());
         return;
     }
 
@@ -498,9 +532,9 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket & recv_data)
     // not move item from loot to target inventory
     Item* newitem = target->StoreNewItem(dest, item.itemid, true, item.randomPropertyId, looters);
     target->SendNewItem(newitem, uint32(item.count), false, false, true);
-    target->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item.itemid, item.count);
-    target->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, loot->loot_type, item.count);
-    target->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item.itemid, item.count);
+    target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item.itemid, item.count);
+    target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, loot->loot_type, item.count);
+    target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item.itemid, item.count);
 
     // mark as looted
     item.count=0;

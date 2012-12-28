@@ -22,23 +22,24 @@ Comment: All reload related commands
 Category: commandscripts
 EndScriptData */
 
-#include "ScriptMgr.h"
-#include "ObjectMgr.h"
-#include "SpellMgr.h"
-#include "TicketMgr.h"
-#include "MapManager.h"
-#include "CreatureEventAIMgr.h"
-#include "DisableMgr.h"
-#include "LFGMgr.h"
+#include "AchievementMgr.h"
 #include "AuctionHouseMgr.h"
+#include "Chat.h"
+#include "CreatureEventAIMgr.h"
 #include "CreatureTextMgr.h"
-#include "SmartAI.h"
+#include "DisableMgr.h"
+#include "Language.h"
+#include "LFGMgr.h"
+#include "MapManager.h"
+#include "ObjectMgr.h"
+#include "ScriptMgr.h"
 #include "SkillDiscovery.h"
 #include "SkillExtraItems.h"
-#include "Chat.h"
-#include "WaypointManager.h"
+#include "SmartAI.h"
+#include "SpellMgr.h"
+#include "TicketMgr.h"
 #include "WardenCheckMgr.h"
-#include "CustomVendor.h"
+#include "WaypointManager.h"
 
 class reload_commandscript : public CommandScript
 {
@@ -79,7 +80,6 @@ public:
             { "config",                       SEC_ADMINISTRATOR, true,  &HandleReloadConfigCommand,                     "", NULL },
             { "creature_text",                SEC_ADMINISTRATOR, true,  &HandleReloadCreatureText,                      "", NULL },
             { "creature_ai_scripts",          SEC_ADMINISTRATOR, true,  &HandleReloadEventAIScriptsCommand,             "", NULL },
-            { "creature_ai_summons",          SEC_ADMINISTRATOR, true,  &HandleReloadEventAISummonsCommand,             "", NULL },
             { "creature_ai_texts",            SEC_ADMINISTRATOR, true,  &HandleReloadEventAITextsCommand,               "", NULL },
             { "creature_involvedrelation",    SEC_ADMINISTRATOR, true,  &HandleReloadCreatureQuestInvRelationsCommand,  "", NULL },
             { "creature_linked_respawn",      SEC_GAMEMASTER,    true,  &HandleReloadLinkedRespawnCommand,              "", NULL },
@@ -126,9 +126,7 @@ public:
             { "pickpocketing_loot_template",  SEC_ADMINISTRATOR, true,  &HandleReloadLootTemplatesPickpocketingCommand, "", NULL},
             { "points_of_interest",           SEC_ADMINISTRATOR, true,  &HandleReloadPointsOfInterestCommand,           "", NULL },
             { "prospecting_loot_template",    SEC_ADMINISTRATOR, true,  &HandleReloadLootTemplatesProspectingCommand,   "", NULL },
-            { "quest_end_scripts",            SEC_ADMINISTRATOR, true,  &HandleReloadQuestEndScriptsCommand,            "", NULL },
             { "quest_poi",                    SEC_ADMINISTRATOR, true,  &HandleReloadQuestPOICommand,                   "", NULL },
-            { "quest_start_scripts",          SEC_ADMINISTRATOR, true,  &HandleReloadQuestStartScriptsCommand,          "", NULL },
             { "quest_template",               SEC_ADMINISTRATOR, true,  &HandleReloadQuestTemplateCommand,              "", NULL },
             { "reference_loot_template",      SEC_ADMINISTRATOR, true,  &HandleReloadLootTemplatesReferenceCommand,     "", NULL },
             { "reserved_name",                SEC_ADMINISTRATOR, true,  &HandleReloadReservedNameCommand,               "", NULL },
@@ -159,7 +157,6 @@ public:
             { "waypoint_data",                SEC_ADMINISTRATOR, true,  &HandleReloadWpCommand,                         "", NULL },
             { "vehicle_accessory",            SEC_ADMINISTRATOR, true,  &HandleReloadVehicleAccessoryCommand,           "", NULL },
             { "vehicle_template_accessory",   SEC_ADMINISTRATOR, true,  &HandleReloadVehicleTemplateAccessoryCommand,   "", NULL },
-			{ "custom_vendor",   SEC_ADMINISTRATOR, true,  &HandleReloadCustomVendorCommand,   "", NULL },
             { NULL,                           0,                 false, NULL,                                           "", NULL }
         };
         static ChatCommand commandTable[] =
@@ -265,8 +262,6 @@ public:
         sLog->outInfo(LOG_FILTER_GENERAL, "Re-Loading Scripts...");
         HandleReloadGameObjectScriptsCommand(handler, "a");
         HandleReloadEventScriptsCommand(handler, "a");
-        HandleReloadQuestEndScriptsCommand(handler, "a");
-        HandleReloadQuestStartScriptsCommand(handler, "a");
         HandleReloadSpellScriptsCommand(handler, "a");
         handler->SendGlobalGMSysMessage("DB tables `*_scripts` reloaded.");
         HandleReloadDbScriptStringCommand(handler, "a");
@@ -278,7 +273,6 @@ public:
     static bool HandleReloadAllEventAICommand(ChatHandler* handler, const char* /*args*/)
     {
         HandleReloadEventAITextsCommand(handler, "a");
-        HandleReloadEventAISummonsCommand(handler, "a");
         HandleReloadEventAIScriptsCommand(handler, "a");
         return true;
     }
@@ -410,9 +404,9 @@ public:
         if (!*args)
             return false;
 
-        Tokens entries(std::string(args), ' ');
+        Tokenizer entries(std::string(args), ' ');
 
-        for (Tokens::const_iterator itr = entries.begin(); itr != entries.end(); ++itr)
+        for (Tokenizer::const_iterator itr = entries.begin(); itr != entries.end(); ++itr)
         {
             uint32 entry = uint32(atoi(*itr));
 
@@ -1039,59 +1033,11 @@ public:
         return true;
     }
 
-    static bool HandleReloadEventAISummonsCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outInfo(LOG_FILTER_GENERAL, "Re-Loading Summons from `creature_ai_summons`...");
-        sEventAIMgr->LoadCreatureEventAI_Summons();
-        handler->SendGlobalGMSysMessage("DB table `creature_ai_summons` reloaded.");
-        return true;
-    }
-
     static bool HandleReloadEventAIScriptsCommand(ChatHandler* handler, const char* /*args*/)
     {
         sLog->outInfo(LOG_FILTER_GENERAL, "Re-Loading Scripts from `creature_ai_scripts`...");
         sEventAIMgr->LoadCreatureEventAI_Scripts();
         handler->SendGlobalGMSysMessage("DB table `creature_ai_scripts` reloaded.");
-        return true;
-    }
-
-    static bool HandleReloadQuestEndScriptsCommand(ChatHandler* handler, const char* args)
-    {
-        if (sScriptMgr->IsScriptScheduled())
-        {
-            handler->SendSysMessage("DB scripts used currently, please attempt reload later.");
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
-
-        if (*args != 'a')
-            sLog->outInfo(LOG_FILTER_GENERAL, "Re-Loading Scripts from `quest_end_scripts`...");
-
-        sObjectMgr->LoadQuestEndScripts();
-
-        if (*args != 'a')
-            handler->SendGlobalGMSysMessage("DB table `quest_end_scripts` reloaded.");
-
-        return true;
-    }
-
-    static bool HandleReloadQuestStartScriptsCommand(ChatHandler* handler, const char* args)
-    {
-        if (sScriptMgr->IsScriptScheduled())
-        {
-            handler->SendSysMessage("DB scripts used currently, please attempt reload later.");
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
-
-        if (*args != 'a')
-            sLog->outInfo(LOG_FILTER_GENERAL, "Re-Loading Scripts from `quest_start_scripts`...");
-
-        sObjectMgr->LoadQuestStartScripts();
-
-        if (*args != 'a')
-            handler->SendGlobalGMSysMessage("DB table `quest_start_scripts` reloaded.");
-
         return true;
     }
 
@@ -1298,14 +1244,6 @@ public:
         sLog->outInfo(LOG_FILTER_GENERAL, "Reloading vehicle_accessory table...");
         sObjectMgr->LoadVehicleAccessories();
         handler->SendGlobalGMSysMessage("Vehicle accessories reloaded.");
-        return true;
-    }
-
-	    static bool HandleReloadCustomVendorCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outInfo(LOG_FILTER_GENERAL, "Reloading custom_vendor table...");
-        CustomVendorMgr.LoadVendors();
-        handler->SendGlobalGMSysMessage("custom_vendor table reloaded.");
         return true;
     }
 

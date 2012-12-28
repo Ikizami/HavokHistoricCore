@@ -16,15 +16,18 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "InstanceScript.h"
-#include "DatabaseEnv.h"
-#include "Map.h"
-#include "Player.h"
-#include "GameObject.h"
 #include "Creature.h"
 #include "CreatureAI.h"
-#include "Log.h"
+#include "DatabaseEnv.h"
+#include "GameObject.h"
+#include "InstanceScript.h"
 #include "LFGMgr.h"
+#include "Log.h"
+#include "Map.h"
+#include "Player.h"
+#include "Pet.h"
+#include "WorldSession.h"
+#include "Opcodes.h"
 
 void InstanceScript::SaveToDB()
 {
@@ -339,7 +342,7 @@ void InstanceScript::DoStartTimedAchievement(AchievementCriteriaTimedTypes type,
     if (!PlayerList.isEmpty())
         for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
             if (Player* player = i->getSource())
-                player->GetAchievementMgr().StartTimedAchievement(type, entry);
+                player->StartTimedAchievement(type, entry);
 }
 
 // Stop timed achievement for all players in instance
@@ -350,7 +353,7 @@ void InstanceScript::DoStopTimedAchievement(AchievementCriteriaTimedTypes type, 
     if (!PlayerList.isEmpty())
         for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
             if (Player* player = i->getSource())
-                player->GetAchievementMgr().RemoveTimedAchievement(type, entry);
+                player->RemoveTimedAchievement(type, entry);
 }
 
 // Remove Auras due to Spell on all players in instance

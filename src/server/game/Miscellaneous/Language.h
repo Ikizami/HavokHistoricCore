@@ -86,8 +86,7 @@ enum TrinityStrings
     LANG_CONNECTED_PLAYERS              = 60,
     LANG_ACCOUNT_ADDON                  = 61,
     LANG_IMPROPER_VALUE                 = 62,
-    LANG_CANT_DO_NOW                    = 63,
-    // Room for more level 0              64-99 not used
+    // Room for more level 0              63-99 not used
 
     // level 1 chat
     LANG_GLOBAL_NOTIFY                  = 100,
@@ -950,8 +949,8 @@ enum TrinityStrings
     LANG_BATTLEGROUND                   = 5015,
     LANG_ARENA                          = 5016,
     LANG_RAID                           = 5017,
-    LANG_HEROIC                         = 5018,
-    LANG_MOUNTABLE                      = 5019,
+                                        //= 5018,
+                                        //= 5019,
     LANG_NPCINFO_PHASEMASK              = 5020,
     LANG_NPCINFO_ARMOR                  = 5021,
     LANG_CHANNEL_ENABLE_OWNERSHIP       = 5022,
@@ -989,6 +988,27 @@ enum TrinityStrings
 
     LANG_WORLD_CLOSED                    = 7523,
     LANG_WORLD_OPENED                    = 7524,
+
+    LANG_LFG_PLAYER_INFO                = 9980,
+    LANG_LFG_GROUP_INFO                 = 9981,
+    LANG_LFG_NOT_IN_GROUP               = 9982,
+    LANG_LFG_CLEAN                      = 9983,
+    LANG_LFG_OPTIONS                    = 9984,
+    LANG_LFG_OPTIONS_CHANGED            = 9985,
+    LANG_LFG_STATE_NONE                 = 9986,
+    LANG_LFG_STATE_ROLECHECK            = 9987,
+    LANG_LFG_STATE_QUEUED               = 9988,
+    LANG_LFG_STATE_PROPOSAL             = 9989,
+    LANG_LFG_STATE_BOOT                 = 9990,
+    LANG_LFG_STATE_DUNGEON              = 9991,
+    LANG_LFG_STATE_FINISHED_DUNGEON     = 9992,
+    LANG_LFG_STATE_RAIDBROWSER          = 9993,
+    LANG_LFG_ROLE_TANK                  = 9994,
+    LANG_LFG_ROLE_HEALER                = 9995,
+    LANG_LFG_ROLE_DAMAGE                = 9996,
+    LANG_LFG_ROLE_LEADER                = 9997,
+    LANG_LFG_ROLE_NONE                  = 9998,
+    LANG_LFG_ERROR                      = 9999,
 
     // Use for not-in-offcial-sources patches
     //                                    10000-10999
@@ -1078,49 +1098,8 @@ enum TrinityStrings
     LANG_AUTO_BROADCAST                 = 11000,
     LANG_INVALID_REALMID                = 11001,
 
-    LANG_REM_TRANSMOGRIFICATIONS_ITEMS  = 11100,
-    LANG_ERR_NO_TRANSMOGRIFICATIONS     = 11101,
-    LANG_REM_TRANSMOGRIFICATION_ITEM    = 11102,
-    LANG_ERR_NO_TRANSMOGRIFICATION      = 11103,
-    LANG_ITEM_TRANSMOGRIFIED            = 11104,
-    LANG_ERR_NO_ITEM_SUITABLE           = 11105,
-    LANG_ERR_NO_ITEM_EXISTS             = 11106,
-    LANG_ERR_EQUIP_SLOT_EMPTY           = 11107,
-
-    LANG_SLOT_NAME_HEAD                 = 11108,
-    LANG_SLOT_NAME_SHOULDERS            = 11109,
-    LANG_SLOT_NAME_BODY                 = 11110,
-    LANG_SLOT_NAME_CHEST                = 11111,
-    LANG_SLOT_NAME_WAIST                = 11112,
-    LANG_SLOT_NAME_LEGS                 = 11113,
-    LANG_SLOT_NAME_FEET                 = 11114,
-    LANG_SLOT_NAME_WRISTS               = 11115,
-    LANG_SLOT_NAME_HANDS                = 11116,
-    LANG_SLOT_NAME_BACK                 = 11117,
-    LANG_SLOT_NAME_MAINHAND             = 11118,
-    LANG_SLOT_NAME_OFFHAND              = 11119,
-    LANG_SLOT_NAME_RANGED               = 11120,
-    LANG_SLOT_NAME_TABARD               = 11121,
-
-    LANG_OPTION_BACK                    = 11122,
-    LANG_OPTION_REMOVE_ALL              = 11123,
-    LANG_POPUP_REMOVE_ALL               = 11124,
-    LANG_OPTION_UPDATE_MENU             = 11125,
-    LANG_OPTION_REMOVE_ONE              = 11126,
-    LANG_POPUP_REMOVE_ONE               = 11127,
-    LANG_POPUP_TRANSMOGRIFY             = 11128,
-	LANG_SPEC_FORBID                    = 11610,
-    LANG_SPEC_NOT_ON_ARENA              = 11611,
-    LANG_SPEC_ON_ARENA_OR_BG            = 11612,
-    LANG_SPEC_ALREADY_SPECTATOR         = 11613,
-    LANG_SPEC_DISABLED                  = 11614,
-    LANG_SPEC_CAN_NOT_CHAT              = 11615,
-
-    LANG_ERR_NO_TOKEN                   = 11129
-
     // NOT RESERVED IDS                   12000-1999999999
     // `db_script_string` table index     2000000000-2000009999 (MIN_DB_SCRIPT_STRING_ID-MAX_DB_SCRIPT_STRING_ID)
     // For other tables maybe             2000010000-2147483647 (max index)
 };
 #endif
-

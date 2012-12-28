@@ -10,16 +10,11 @@
 
 set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
-    Custom/Transmogrification.cpp
-    Custom/Transmogrification.h
-	Custom/vendor_multi.cpp
-	Custom/vendor_general.cpp
-	Custom/vendor_donation.cpp
-	Custom/Proff.cpp
-	Custom/enchant.cpp
-	Custom/worldchat.cpp
-	Custom/bountyhunter.cpp
-	Custom/toparena.cpp
+  Custom/TransmogMgr.cpp
+  Custom/transmogMgr.h
+  Custom/TransmogEngine.cpp
+  Custom/TransmogEngine.h
+  Custom/TransmogHandler.cpp
 )
 
 message("  -> Prepared: Custom")
